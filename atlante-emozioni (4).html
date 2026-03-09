@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlante delle Emozioni</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f7f2;
+    --rabbia: #c0392b;
+    --paura: #6c3db0;
+    --disgusto: #2e7d4a;
+    --tristezza: #1a5fa0;
+    --gioia: #c07010;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: #000; font-family: 'Jost', sans-serif; font-weight: 300; font-size: 16px; }
+
+  header { text-align: center; padding: 1.5rem 1.5rem 1rem; }
+  header h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300; letter-spacing: 0.15em; }
+  header p { font-size: 0.85rem; color: #333; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 0.3rem; }
+  .subtitle { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.95rem; color: #333; margin-top: 0.2rem; }
+
+  .continents { display: flex; justify-content: center; gap: 0.8rem; padding: 1rem 0.8rem; flex-wrap: wrap; }
+  .continent-btn { cursor: pointer; border: none; background: none; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; transition: transform 0.3s; }
+  .continent-btn:hover { transform: translateY(-3px); }
+  .continent-btn.active .blob { opacity: 1; transform: scale(1.1); }
+
+  .blob { width: 65px; height: 65px; border-radius: 60% 40% 55% 45%/45% 55% 40% 60%; opacity: 0.6; transition: all 0.4s; animation: morph 6s ease-in-out infinite; }
+  .continent-btn:hover .blob { opacity: 0.9; }
+  @keyframes morph {
+    0%   { border-radius: 60% 40% 55% 45%/45% 55% 40% 60%; }
+    25%  { border-radius: 45% 55% 40% 60%/60% 40% 55% 45%; }
+    50%  { border-radius: 50% 50% 60% 40%/40% 60% 50% 50%; }
+    75%  { border-radius: 40% 60% 45% 55%/55% 45% 60% 40%; }
+    100% { border-radius: 60% 40% 55% 45%/45% 55% 40% 60%; }
+  }
+  .blob-rabbia    { background: radial-gradient(circle at 40% 40%, #f07050, #c03010); animation-delay: 0s; }
+  .blob-paura     { background: radial-gradient(circle at 40% 40%, #9a7cd8, #5030a0); animation-delay: -1.2s; }
+  .blob-disgusto  { background: radial-gradient(circle at 40% 40%, #6ab87a, #2a7848); animation-delay: -2.4s; }
+  .blob-tristezza { background: radial-gradient(circle at 40% 40%, #5090d8, #1850a0); animation-delay: -3.6s; }
+  .blob-gioia     { background: radial-gradient(circle at 40% 40%, #f0c040, #c07010); animation-delay: -4.8s; }
+
+  .cname { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #333; font-weight: 500; }
+  .continent-btn.active .cname { color: #000; font-weight: 700; }
+
+  .main-panel { max-width: 860px; margin: 0 auto; padding: 0 1.2rem 3rem; }
+  .emotion-panel { display: none; animation: fadeUp 0.4s ease forwards; }
+  .emotion-panel.active { display: block; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+  .emotion-header { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.5rem; padding-bottom: 1.2rem; border-bottom: 2px solid #c8ddc8; }
+  .emotion-blob-large { width: 55px; height: 55px; flex-shrink: 0; border-radius: 60% 40% 55% 45%/45% 55% 40% 60%; animation: morph 6s ease-in-out infinite; }
+  .emotion-title { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 400; }
+  .emotion-desc { font-size: 0.95rem; color: #222; margin-top: 0.25rem; line-height: 1.6; }
+
+  .tabs { display: flex; margin-bottom: 1.5rem; border-bottom: 2px solid #c8ddc8; }
+  .tab-btn { background: none; border: none; color: #333; font-family: 'Jost', sans-serif; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; padding: 0.7rem 1.1rem; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.3s; }
+  .tab-btn:hover { color: #000; }
+  .tab-btn.active { color: #000; font-weight: 700; border-bottom-color: var(--emotion-color, #000); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeUp 0.3s ease; }
+
+  .states-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 0.7rem; }
+  .state-card { background: #fff; border: 1.5px solid #c8ddc8; border-radius: 8px; padding: 0.85rem 1rem; transition: all 0.3s; position: relative; overflow: hidden; }
+  .state-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--emotion-color, #888); opacity: 0.7; }
+  .state-card:hover { border-color: var(--emotion-color, #888); transform: translateX(3px); background: #f8fdf8; }
+  .state-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 500; color: #000; }
+  .state-intensity { font-size: 0.72rem; color: #444; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.25rem; font-weight: 500; }
+  .intensity-bar { height: 3px; background: #d8ead8; border-radius: 2px; margin-top: 0.5rem; overflow: hidden; }
+  .intensity-fill { height: 100%; background: var(--emotion-color, #888); border-radius: 2px; opacity: 0.8; }
+
+  .triggers-list { display: flex; flex-direction: column; gap: 0.6rem; }
+  .trigger-item { display: flex; align-items: flex-start; gap: 0.9rem; padding: 0.85rem 1rem; background: #fff; border: 1.5px solid #c8ddc8; border-radius: 8px; }
+  .trigger-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--emotion-color, #888); flex-shrink: 0; margin-top: 5px; }
+  .trigger-text { font-size: 0.95rem; line-height: 1.6; color: #000; }
+
+  .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  @media(max-width:560px){ .actions-grid { grid-template-columns: 1fr; } }
+  .actions-column h4 { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #000; font-weight: 700; margin-bottom: 0.7rem; padding-bottom: 0.4rem; border-bottom: 2px solid #c8ddc8; }
+  .action-item { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.55rem 0; border-bottom: 1px solid #e0ede0; font-size: 0.9rem; color: #000; line-height: 1.5; }
+  .action-icon { font-size: 0.9rem; flex-shrink: 0; margin-top: 1px; }
+
+  .mood-box { background: #fff; border: 1.5px solid #c8ddc8; border-radius: 12px; padding: 1.2rem 1.5rem; }
+  .mood-name { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 400; color: #000; margin-bottom: 0.5rem; }
+  .mood-desc { font-size: 0.95rem; color: #111; line-height: 1.7; }
+
+  .calm-section { text-align: center; padding: 2rem 1.5rem; border-top: 2px solid #c8ddc8; margin-top: 2rem; }
+  .calm-blob { width: 55px; height: 55px; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #a0c8d8, #4080a0); margin: 0 auto 1.2rem; animation: pulse 4s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.08);opacity:1} }
+  .calm-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; letter-spacing: 0.1em; color: #000; margin-bottom: 0.8rem; }
+  .calm-desc { font-size: 0.95rem; color: #111; line-height: 1.8; max-width: 480px; margin: 0 auto; }
+
+  .welcome { text-align: center; padding: 2.5rem 1.5rem; }
+  .welcome p { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.2rem; line-height: 1.8; max-width: 480px; margin: 0 auto; color: #333; }
+
+  footer { text-align: center; padding: 1.5rem; border-top: 1px solid #c8ddc8; font-size: 0.78rem; color: #444; letter-spacing: 0.1em; }
+  footer a { color: #444; text-decoration: none; }
+  footer a:hover { color: #000; }
+
+  .panel-rabbia    { --emotion-color: var(--rabbia); }
+  .panel-paura     { --emotion-color: var(--paura); }
+  .panel-disgusto  { --emotion-color: var(--disgusto); }
+  .panel-tristezza { --emotion-color: var(--tristezza); }
+  .panel-gioia     { --emotion-color: var(--gioia); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Atlante delle Emozioni</h1>
+  <p>Paul &amp; Eve Ekman — Versione Italiana</p>
+  <div class="subtitle">Corpo ed emozioni in movimento</div>
+</header>
+
+<div class="continents">
+  <button class="continent-btn" onclick="selectEmotion('rabbia',event)"><div class="blob blob-rabbia"></div><span class="cname">Rabbia</span></button>
+  <button class="continent-btn" onclick="selectEmotion('paura',event)"><div class="blob blob-paura"></div><span class="cname">Paura</span></button>
+  <button class="continent-btn" onclick="selectEmotion('disgusto',event)"><div class="blob blob-disgusto"></div><span class="cname">Disgusto</span></button>
+  <button class="continent-btn" onclick="selectEmotion('tristezza',event)"><div class="blob blob-tristezza"></div><span class="cname">Tristezza</span></button>
+  <button class="continent-btn" onclick="selectEmotion('gioia',event)"><div class="blob blob-gioia"></div><span class="cname">Gioia</span></button>
+</div>
+
+<div class="main-panel">
+  <div class="welcome" id="welcome"><p>Seleziona un continente emotivo per esplorarne gli stati, i trigger, le azioni e gli stati d'umore.</p></div>
+
+  <!-- RABBIA -->
+  <div class="emotion-panel panel-rabbia" id="panel-rabbia">
+    <div class="emotion-header"><div class="emotion-blob-large blob-rabbia"></div><div><div class="emotion-title" style="color:var(--rabbia)">Rabbia</div><div class="emotion-desc">Una risposta a ostacoli, ingiustizie o minacce percepite. Può essere distruttiva o, se gestita, fonte di energia per il cambiamento.</div></div></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'rabbia','stati')">Stati</button>
+      <button class="tab-btn" onclick="switchTab(this,'rabbia','trigger')">Trigger</button>
+      <button class="tab-btn" onclick="switchTab(this,'rabbia','azioni')">Azioni</button>
+      <button class="tab-btn" onclick="switchTab(this,'rabbia','umore')">Umore</button>
+    </div>
+    <div class="tab-content active" id="rabbia-stati"><div class="states-grid">
+      <div class="state-card"><div class="state-name">Fastidio</div><div class="state-intensity">Bassa intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:20%"></div></div></div>
+      <div class="state-card"><div class="state-name">Frustrazione</div><div class="state-intensity">Bassa intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:35%"></div></div></div>
+      <div class="state-card"><div class="state-name">Esasperazione</div><div class="state-intensity">Media intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:50%"></div></div></div>
+      <div class="state-card"><div class="state-name">Irritazione</div><div class="state-intensity">Media intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:55%"></div></div></div>
+      <div class="state-card"><div class="state-name">Collera</div><div class="state-intensity">Alta intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:75%"></div></div></div>
+      <div class="state-card"><div class="state-name">Furia</div><div class="state-intensity">Molto alta</div><div class="intensity-bar"><div class="intensity-fill" style="width:95%"></div></div></div>
+    </div></div>
+    <div class="tab-content" id="rabbia-trigger"><div class="triggers-list">
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Essere ostacolati nel raggiungere un obiettivo importante</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Subire o assistere a un'ingiustizia</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Essere insultati, umiliati o non rispettati</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Sentirsi traditi o ingannati da qualcuno di fiducia</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Minacce fisiche o psicologiche a sé o ai propri cari</div></div>
+    </div></div>
+    <div class="tab-content" id="rabbia-azioni"><div class="actions-grid">
+      <div class="actions-column"><h4>✦ Costruttive</h4>
+        <div class="action-item"><span class="action-icon">→</span>Esprimere il disagio in modo assertivo</div>
+        <div class="action-item"><span class="action-icon">→</span>Allontanarsi temporaneamente per calmarsi</div>
+        <div class="action-item"><span class="action-icon">→</span>Incanalare l'energia in attività fisica</div>
+        <div class="action-item"><span class="action-icon">→</span>Cercare una soluzione al problema</div>
+      </div>
+      <div class="actions-column"><h4>✕ Distruttive</h4>
+        <div class="action-item"><span class="action-icon">→</span>Aggredire verbalmente o fisicamente</div>
+        <div class="action-item"><span class="action-icon">→</span>Distruggere oggetti</div>
+        <div class="action-item"><span class="action-icon">→</span>Isolarsi e covare risentimento</div>
+        <div class="action-item"><span class="action-icon">→</span>Vendicarsi</div>
+      </div>
+    </div></div>
+    <div class="tab-content" id="rabbia-umore"><div class="mood-box"><div class="mood-name">Irritabilità cronica</div><div class="mood-desc">Uno stato duraturo in cui piccole frustrazioni scatenano reazioni sproporzionate. Chi vive in questo umore tende a interpretare gli eventi come ostili e a sentirsi continuamente in conflitto.</div></div></div>
+  </div>
+
+  <!-- PAURA -->
+  <div class="emotion-panel panel-paura" id="panel-paura">
+    <div class="emotion-header"><div class="emotion-blob-large blob-paura"></div><div><div class="emotion-title" style="color:var(--paura)">Paura</div><div class="emotion-desc">Una risposta adattiva a minacce reali o percepite. Attiva il corpo per proteggersi: combattere, fuggire o immobilizzarsi.</div></div></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'paura','stati')">Stati</button>
+      <button class="tab-btn" onclick="switchTab(this,'paura','trigger')">Trigger</button>
+      <button class="tab-btn" onclick="switchTab(this,'paura','azioni')">Azioni</button>
+      <button class="tab-btn" onclick="switchTab(this,'paura','umore')">Umore</button>
+    </div>
+    <div class="tab-content active" id="paura-stati"><div class="states-grid">
+      <div class="state-card"><div class="state-name">Apprensione</div><div class="state-intensity">Bassa intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:20%"></div></div></div>
+      <div class="state-card"><div class="state-name">Preoccupazione</div><div class="state-intensity">Bassa intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:35%"></div></div></div>
+      <div class="state-card"><div class="state-name">Nervosismo</div><div class="state-intensity">Media intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:50%"></div></div></div>
+      <div class="state-card"><div class="state-name">Ansia</div><div class="state-intensity">Media intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:60%"></div></div></div>
+      <div class="state-card"><div class="state-name">Panico</div><div class="state-intensity">Alta intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:85%"></div></div></div>
+      <div class="state-card"><div class="state-name">Terrore</div><div class="state-intensity">Massima</div><div class="intensity-bar"><div class="intensity-fill" style="width:100%"></div></div></div>
+    </div></div>
+    <div class="tab-content" id="paura-trigger"><div class="triggers-list">
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Minaccia fisica imminente o pericolo reale</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Situazioni di incertezza o perdita di controllo</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Ricordi di esperienze traumatiche passate</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Anticipazione di eventi dolorosi o imbarazzanti</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Stimoli associati a minacce passate (fobie)</div></div>
+    </div></div>
+    <div class="tab-content" id="paura-azioni"><div class="actions-grid">
+      <div class="actions-column"><h4>✦ Costruttive</h4>
+        <div class="action-item"><span class="action-icon">→</span>Allontanarsi dal pericolo reale</div>
+        <div class="action-item"><span class="action-icon">→</span>Chiedere supporto a persone di fiducia</div>
+        <div class="action-item"><span class="action-icon">→</span>Praticare respirazione per regolarsi</div>
+        <div class="action-item"><span class="action-icon">→</span>Affrontare gradualmente le paure</div>
+      </div>
+      <div class="actions-column"><h4>✕ Distruttive</h4>
+        <div class="action-item"><span class="action-icon">→</span>Evitare sistematicamente le situazioni temute</div>
+        <div class="action-item"><span class="action-icon">→</span>Paralisi e immobilità prolungata</div>
+        <div class="action-item"><span class="action-icon">→</span>Comportamenti di controllo eccessivo</div>
+        <div class="action-item"><span class="action-icon">→</span>Aggressività difensiva</div>
+      </div>
+    </div></div>
+    <div class="tab-content" id="paura-umore"><div class="mood-box"><div class="mood-name">Ansia generalizzata</div><div class="mood-desc">Uno stato persistente di allerta diffusa in cui la mente anticipa continuamente pericoli, anche in assenza di minacce reali. Il corpo rimane in tensione costante.</div></div></div>
+  </div>
+
+  <!-- DISGUSTO -->
+  <div class="emotion-panel panel-disgusto" id="panel-disgusto">
+    <div class="emotion-header"><div class="emotion-blob-large blob-disgusto"></div><div><div class="emotion-title" style="color:var(--disgusto)">Disgusto</div><div class="emotion-desc">Una risposta evolutiva a ciò che percepiamo come nocivo o moralmente inaccettabile. Ci spinge ad allontanarci da ciò che avvertiamo come impuro.</div></div></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'disgusto','stati')">Stati</button>
+      <button class="tab-btn" onclick="switchTab(this,'disgusto','trigger')">Trigger</button>
+      <button class="tab-btn" onclick="switchTab(this,'disgusto','azioni')">Azioni</button>
+      <button class="tab-btn" onclick="switchTab(this,'disgusto','umore')">Umore</button>
+    </div>
+    <div class="tab-content active" id="disgusto-stati"><div class="states-grid">
+      <div class="state-card"><div class="state-name">Disappunto</div><div class="state-intensity">Bassa intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:20%"></div></div></div>
+      <div class="state-card"><div class="state-name">Avversione</div><div class="state-intensity">Media intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:45%"></div></div></div>
+      <div class="state-card"><div class="state-name">Ripugnanza</div><div class="state-intensity">Alta intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:70%"></div></div></div>
+      <div class="state-card"><div class="state-name">Disgusto morale</div><div class="state-intensity">Alta intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:75%"></div></div></div>
+      <div class="state-card"><div class="state-name">Disprezzo</div><div class="state-intensity">Media-alta</div><div class="intensity-bar"><div class="intensity-fill" style="width:60%"></div></div></div>
+      <div class="state-card"><div class="state-name">Abominio</div><div class="state-intensity">Massima</div><div class="intensity-bar"><div class="intensity-fill" style="width:95%"></div></div></div>
+    </div></div>
+    <div class="tab-content" id="disgusto-trigger"><div class="triggers-list">
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Odori, sapori o immagini percepiti come contaminanti</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Comportamenti che violano norme morali o valori etici</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Ipocrisia, ingiustizia o crudeltà altrui</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Situazioni associate a malattia o decomposizione</div></div>
+    </div></div>
+    <div class="tab-content" id="disgusto-azioni"><div class="actions-grid">
+      <div class="actions-column"><h4>✦ Costruttive</h4>
+        <div class="action-item"><span class="action-icon">→</span>Allontanarsi da ciò che è nocivo</div>
+        <div class="action-item"><span class="action-icon">→</span>Esprimere i propri valori etici</div>
+        <div class="action-item"><span class="action-icon">→</span>Stabilire confini personali chiari</div>
+      </div>
+      <div class="actions-column"><h4>✕ Distruttive</h4>
+        <div class="action-item"><span class="action-icon">→</span>Escludere o stigmatizzare gli altri</div>
+        <div class="action-item"><span class="action-icon">→</span>Espressioni di disprezzo verso persone</div>
+        <div class="action-item"><span class="action-icon">→</span>Rigidità morale e intolleranza</div>
+      </div>
+    </div></div>
+    <div class="tab-content" id="disgusto-umore"><div class="mood-box"><div class="mood-name">Cinismo persistente</div><div class="mood-desc">Uno stato duraturo in cui si tende a vedere il mondo come fondamentalmente corrotto. Porta a distanza critica e difficoltà di fiducia nelle relazioni.</div></div></div>
+  </div>
+
+  <!-- TRISTEZZA -->
+  <div class="emotion-panel panel-tristezza" id="panel-tristezza">
+    <div class="emotion-header"><div class="emotion-blob-large blob-tristezza"></div><div><div class="emotion-title" style="color:var(--tristezza)">Tristezza</div><div class="emotion-desc">Una risposta alla perdita, alla delusione o all'abbandono. Ci invita a riflettere su ciò che è prezioso e segnala il bisogno di sostegno.</div></div></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'tristezza','stati')">Stati</button>
+      <button class="tab-btn" onclick="switchTab(this,'tristezza','trigger')">Trigger</button>
+      <button class="tab-btn" onclick="switchTab(this,'tristezza','azioni')">Azioni</button>
+      <button class="tab-btn" onclick="switchTab(this,'tristezza','umore')">Umore</button>
+    </div>
+    <div class="tab-content active" id="tristezza-stati"><div class="states-grid">
+      <div class="state-card"><div class="state-name">Malinconia</div><div class="state-intensity">Bassa intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:25%"></div></div></div>
+      <div class="state-card"><div class="state-name">Delusione</div><div class="state-intensity">Bassa-media</div><div class="intensity-bar"><div class="intensity-fill" style="width:35%"></div></div></div>
+      <div class="state-card"><div class="state-name">Solitudine</div><div class="state-intensity">Media intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:50%"></div></div></div>
+      <div class="state-card"><div class="state-name">Dolore</div><div class="state-intensity">Alta intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:75%"></div></div></div>
+      <div class="state-card"><div class="state-name">Lutto</div><div class="state-intensity">Alta intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:85%"></div></div></div>
+      <div class="state-card"><div class="state-name">Disperazione</div><div class="state-intensity">Massima</div><div class="intensity-bar"><div class="intensity-fill" style="width:100%"></div></div></div>
+    </div></div>
+    <div class="tab-content" id="tristezza-trigger"><div class="triggers-list">
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Perdita di una persona cara (lutto, separazione)</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Fallimento di aspettative o sogni importanti</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Sentirsi esclusi, rifiutati o incompresi</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Testimoniare la sofferenza altrui</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Ricordi di perdite passate</div></div>
+    </div></div>
+    <div class="tab-content" id="tristezza-azioni"><div class="actions-grid">
+      <div class="actions-column"><h4>✦ Costruttive</h4>
+        <div class="action-item"><span class="action-icon">→</span>Cercare conforto in persone care</div>
+        <div class="action-item"><span class="action-icon">→</span>Piangere e lasciar fluire il dolore</div>
+        <div class="action-item"><span class="action-icon">→</span>Riflettere su ciò che si è perso</div>
+        <div class="action-item"><span class="action-icon">→</span>Creare o apprezzare arte espressiva</div>
+      </div>
+      <div class="actions-column"><h4>✕ Distruttive</h4>
+        <div class="action-item"><span class="action-icon">→</span>Isolarsi completamente</div>
+        <div class="action-item"><span class="action-icon">→</span>Rinunciare ad attività significative</div>
+        <div class="action-item"><span class="action-icon">→</span>Abuso di sostanze per anestetizzarsi</div>
+        <div class="action-item"><span class="action-icon">→</span>Rimuginio continuo e pensieri negativi</div>
+      </div>
+    </div></div>
+    <div class="tab-content" id="tristezza-umore"><div class="mood-box"><div class="mood-name">Disforia</div><div class="mood-desc">Uno stato prolungato di umore basso in cui tutto sembra privo di significato o interesse. Può essere precursore di depressione se non affrontato.</div></div></div>
+  </div>
+
+  <!-- GIOIA -->
+  <div class="emotion-panel panel-gioia" id="panel-gioia">
+    <div class="emotion-header"><div class="emotion-blob-large blob-gioia"></div><div><div class="emotion-title" style="color:var(--gioia)">Gioia</div><div class="emotion-desc">Un'emozione multiforme che abbraccia piacere, connessione, significato e trascendenza. Ci apre al mondo e rafforza i legami con gli altri.</div></div></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'gioia','stati')">Stati</button>
+      <button class="tab-btn" onclick="switchTab(this,'gioia','trigger')">Trigger</button>
+      <button class="tab-btn" onclick="switchTab(this,'gioia','azioni')">Azioni</button>
+      <button class="tab-btn" onclick="switchTab(this,'gioia','umore')">Umore</button>
+    </div>
+    <div class="tab-content active" id="gioia-stati"><div class="states-grid">
+      <div class="state-card"><div class="state-name">Piacere sensoriale</div><div class="state-intensity">Bassa intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:20%"></div></div></div>
+      <div class="state-card"><div class="state-name">Divertimento</div><div class="state-intensity">Bassa-media</div><div class="intensity-bar"><div class="intensity-fill" style="width:35%"></div></div></div>
+      <div class="state-card"><div class="state-name">Contentezza</div><div class="state-intensity">Media intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:50%"></div></div></div>
+      <div class="state-card"><div class="state-name">Entusiasmo</div><div class="state-intensity">Media-alta</div><div class="intensity-bar"><div class="intensity-fill" style="width:65%"></div></div></div>
+      <div class="state-card"><div class="state-name">Euforia</div><div class="state-intensity">Alta intensità</div><div class="intensity-bar"><div class="intensity-fill" style="width:85%"></div></div></div>
+      <div class="state-card"><div class="state-name">Estasi</div><div class="state-intensity">Massima</div><div class="intensity-bar"><div class="intensity-fill" style="width:100%"></div></div></div>
+    </div></div>
+    <div class="tab-content" id="gioia-trigger"><div class="triggers-list">
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Connessione autentica con persone amate</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Raggiungere un obiettivo significativo</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Esperienze di bellezza: natura, arte, musica</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Giocare, ridere, condividere momenti leggeri</div></div>
+      <div class="trigger-item"><div class="trigger-dot"></div><div class="trigger-text">Sentirsi apprezzati e riconosciuti</div></div>
+    </div></div>
+    <div class="tab-content" id="gioia-azioni"><div class="actions-grid">
+      <div class="actions-column"><h4>✦ Costruttive</h4>
+        <div class="action-item"><span class="action-icon">→</span>Condividere la gioia con gli altri</div>
+        <div class="action-item"><span class="action-icon">→</span>Esprimere gratitudine</div>
+        <div class="action-item"><span class="action-icon">→</span>Impegnarsi in attività creative</div>
+        <div class="action-item"><span class="action-icon">→</span>Aiutare e donare agli altri</div>
+      </div>
+      <div class="actions-column"><h4>✕ Distruttive</h4>
+        <div class="action-item"><span class="action-icon">→</span>Eccessi edonistici (cibo, alcol, shopping)</div>
+        <div class="action-item"><span class="action-icon">→</span>Comportamenti impulsivi e rischiosi</div>
+        <div class="action-item"><span class="action-icon">→</span>Vantarsi in modo insensibile</div>
+        <div class="action-item"><span class="action-icon">→</span>Ignorare i bisogni altrui per inseguire piacere</div>
+      </div>
+    </div></div>
+    <div class="tab-content" id="gioia-umore"><div class="mood-box"><div class="mood-name">Euforia cronica</div><div class="mood-desc">Uno stato persistente di eccitazione elevata che può portare a comportamenti impulsivi e alla difficoltà di tollerare momenti neutri o negativi.</div></div></div>
+  </div>
+
+  <div class="calm-section">
+    <div class="calm-blob"></div>
+    <div class="calm-title">Raggiungere la Calma</div>
+    <div class="calm-desc">La calma non è assenza di emozioni, ma uno stato attivo in cui la mente usa intelligenza e saggezza per valutare il mondo che cambia. È il punto di equilibrio da cui osservare le emozioni senza esserne travolti.</div>
+  </div>
+</div>
+
+<footer>Ispirato a <a href="https://atlasofemotions.org" target="_blank">The Ekmans' Atlas of Emotions</a> — Paul &amp; Eve Ekman</footer>
+
+<script>
+  function selectEmotion(name, e) {
+    document.querySelectorAll('.continent-btn').forEach(b => b.classList.remove('active'));
+    e.currentTarget.classList.add('active');
+    document.getElementById('welcome').style.display = 'none';
+    document.querySelectorAll('.emotion-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    document.querySelector('.main-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function switchTab(btn, emotion, tab) {
+    const panel = document.getElementById('panel-' + emotion);
+    panel.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    panel.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById(emotion + '-' + tab).classList.add('active');
+  }
+</script>
+</body>
+</html>
