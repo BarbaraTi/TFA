@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chi sono? - Le mie intelligenze</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fdf6ee;
+  --card: #ffffff;
+  --text: #1c1007;
+  --sub: #3d2e22;
+  --muted: #6b5444;
+  --border: #e2d4c6;
+  --accent: #c4622a;
+  --accent-light: #f0d4c2;
+  --radius: 16px;
+  --shadow: 0 2px 16px rgba(28,16,7,0.09);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 72px; }
+
+/* HERO */
+.hero {
+  background: #1c1007;
+  padding: 56px 24px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 40px;
+  background: var(--bg);
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+.hero-tag {
+  display: inline-block;
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent-light);
+  border: 1px solid rgba(240,212,194,0.4);
+  border-radius: 99px; padding: 4px 14px; margin-bottom: 20px;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.6rem, 7vw, 4rem);
+  font-weight: 900; color: #fff; line-height: 1.05;
+}
+.hero h1 em { color: var(--accent-light); font-style: normal; }
+.hero p { margin-top: 16px; font-size: 1rem; color: rgba(255,255,255,0.75); max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.65; }
+.hero-count { margin-top: 24px; font-size: 0.78rem; color: rgba(255,255,255,0.5); letter-spacing: 0.06em; }
+
+/* PROGRESS */
+.progress-bar-wrap { max-width: 680px; margin: 32px auto 0; padding: 0 24px; }
+.progress-track { background: var(--border); border-radius: 99px; height: 5px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: 99px; width: 0%; transition: width 0.5s ease; }
+.progress-txt { font-size: 0.74rem; font-weight: 600; color: var(--muted); margin-top: 7px; text-align: right; }
+
+/* LAYOUT */
+.wrap { max-width: 680px; margin: 0 auto; padding: 0 24px; }
+
+/* SECTION HEADER */
+.sec-head { display: flex; align-items: center; gap: 12px; margin: 40px 0 18px; }
+.sec-color { width: 4px; height: 28px; border-radius: 99px; flex-shrink: 0; }
+.sec-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sub); }
+
+/* QUESTION CARD */
+.qcard {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px 24px 20px;
+  margin-bottom: 14px;
+  border: 1.5px solid var(--border);
+  animation: rise 0.35s ease both;
+}
+@keyframes rise { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.qn { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 7px; }
+.qt { font-size: 0.97rem; font-weight: 600; color: var(--text); line-height: 1.55; margin-bottom: 18px; }
+
+/* SCALE */
+.scale { display: flex; gap: 7px; }
+.scale label { flex: 1; cursor: pointer; }
+.scale input { display: none; }
+.sbtn {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  border: 2px solid var(--border); border-radius: 12px;
+  padding: 11px 4px 9px; background: #faf7f4;
+  transition: all 0.18s;
+}
+.sbtn .ico { font-size: 1.25rem; }
+.sbtn .lbl { font-size: 0.64rem; font-weight: 700; color: var(--sub); line-height: 1.2; text-align: center; }
+.scale input:checked + .sbtn { border-color: var(--qc, var(--accent)); background: var(--qcl, var(--accent-light)); }
+
+/* COLOR PER SEZIONE */
+.s1 { --qc:#c4622a; --qcl:#f5ddd0; }
+.s2 { --qc:#2a7c62; --qcl:#cff0e6; }
+.s3 { --qc:#6a3ab0; --qcl:#e8d8f8; }
+.s4 { --qc:#7c6a1a; --qcl:#f5eec0; }
+.s5 { --qc:#1a6a8a; --qcl:#c8eaf5; }
+.s6 { --qc:#8a2a6a; --qcl:#f5c8e8; }
+.s7 { --qc:#3a6a2a; --qcl:#d0f0c8; }
+
+/* SUBMIT */
+.submit-area { margin-top: 48px; text-align: center; }
+.btn-go {
+  font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 1rem;
+  background: var(--accent); color: #fff; border: none;
+  border-radius: 99px; padding: 15px 44px; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(196,98,42,0.4);
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.btn-go:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(196,98,42,0.45); }
+.btn-go:disabled { background: #c8b8ae; box-shadow: none; cursor: not-allowed; transform: none; }
+.submit-note { margin-top: 10px; font-size: 0.75rem; font-weight: 600; color: var(--muted); }
+
+/* RESULTS */
+#results { display: none; animation: rise 0.45s ease both; }
+.result-top {
+  background: #1c1007;
+  border-radius: var(--radius);
+  padding: 36px 28px 32px;
+  margin-top: 40px; color: #fff; text-align: center;
+}
+.result-top .r-emoji { font-size: 3rem; margin-bottom: 10px; }
+.result-top h2 { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 700; }
+.result-top p { margin-top: 10px; font-size: 0.93rem; color: rgba(255,255,255,0.78); line-height: 1.65; }
+
+.profiles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+@media(max-width:480px){ .profiles-grid { grid-template-columns: 1fr; } }
+
+.pcard {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); border: 1.5px solid var(--border);
+  padding: 18px 16px;
+}
+.pcard .p-icon { font-size: 1.7rem; margin-bottom: 8px; }
+.pcard .p-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.pcard .p-bar-bg { background: var(--border); border-radius: 99px; height: 5px; margin: 8px 0 10px; overflow: hidden; }
+.pcard .p-bar { height: 100%; border-radius: 99px; transition: width 1s ease; width: 0%; }
+.pcard .p-pct { font-size: 0.8rem; font-weight: 700; margin-bottom: 6px; }
+.pcard .p-desc { font-size: 0.8rem; color: var(--sub); line-height: 1.5; }
+
+.result-note {
+  background: var(--card); border-radius: var(--radius);
+  border: 1.5px solid var(--border); box-shadow: var(--shadow);
+  padding: 22px 24px; margin-top: 14px; text-align: center;
+}
+.result-note h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+.result-note p { font-size: 0.85rem; color: var(--sub); line-height: 1.65; }
+
+.btn-retry {
+  margin-top: 22px; font-family: 'DM Sans', sans-serif; font-weight: 600;
+  font-size: 0.84rem; color: var(--accent); background: transparent;
+  border: 2px solid var(--accent); border-radius: 99px; padding: 9px 26px;
+  cursor: pointer; transition: all 0.18s;
+}
+.btn-retry:hover { background: var(--accent); color: #fff; }
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-tag">Test 1 di 4 &middot; Orientamento</div>
+  <h1>Le mie <em>intelligenze</em></h1>
+  <p>Ognuno impara e funziona in modo diverso. Rispondi con onesta: scoprirai quali sono le tue intelligenze piu forti.</p>
+  <div class="hero-count" id="heroCount">0 di 14 domande completate</div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-track"><div class="progress-fill" id="pFill"></div></div>
+  <div class="progress-txt" id="pTxt">Inizia</div>
+</div>
+
+<div class="wrap" id="quiz">
+
+<div class="s1">
+  <div class="sec-head"><div class="sec-color" style="background:#c4622a"></div><div class="sec-title">&#128290; Logico-matematica</div></div>
+  <div class="qcard" style="animation-delay:.04s">
+    <div class="qn">DOMANDA 1</div>
+    <div class="qt">Mi piace risolvere problemi, indovinelli logici o rompicapo matematici.</div>
+    <div class="scale">
+      <label><input type="radio" name="q1" value="1"><div class="sbtn"><span class="ico">&#128566;</span><span class="lbl">Per niente</span></div></label>
+      <label><input type="radio" name="q1" value="2"><div class="sbtn"><span class="ico">&#128577;</span><span class="lbl">Poco</span></div></label>
+      <label><input type="radio" name="q1" value="3"><div class="sbtn"><span class="ico">&#128528;</span><span class="lbl">Abbastanza</span></div></label>
+      <label><input type="radio" name="q1" value="4"><div class="sbtn"><span class="ico">&#128516;</span><span class="lbl">Molto</span></div></label>
+    </div>
+  </div>
+  <div class="qcard" style="animation-delay:.08s">
+    <div class="qn">DOMANDA 2</div>
+    <div class="qt">Capisco facilmente come funzionano i meccanismi: mi piace smontare o costruire cose per scoprirlo.</div>
+    <div class="scale">
+      <label><input type="radio" name="q2" value="1"><div class="sbtn"><span class="ico">&#128566;</span><span class="lbl">Per niente</span></div></label>
+      <label><input type="radio" name="q2" value="2"><div class="sbtn"><span class="ico">&#128577;</span><span class="lbl">Poco</span></div></label>
+      <label><input type="radio" name="q2" value="3"><div class="sbtn"><span class="ico">&#128528;</span><span class="lbl">Abbastanza</span></div></label>
+      <label><input type="radio" name="q2" value="4"><div class="sbtn"><span class="ico">&#128516;</span><span class="lbl">Molto</span></div></label>
+    </div>
+  </div>
+</div>
+
+<div class="s2">
+  <div class="sec-head"><div class="sec-color" style="background:#2a7c62"></div><div class="sec-title">&#128218; Linguistica</div></div>
+  <div class="qcard" style="animation-delay:.12s">
+    <div class="qn">DOMANDA 3</div>
+    <div class="qt">Amo leggere, scrivere o inventare storie: le parole mi vengono facili e mi piace usarle bene.</div>
+    <div class="scale">
+      <label><input type="radio" name="q3" value="1"><div class="sbtn"><span class="ico">&#128566;</span><span class="lbl">Per niente</span></div></label>
+      <label><input type="radio" name="q3" value="2"><div class="sbtn"><span class="ico">&#128577;</span><span class="lbl">Poco</span></div></label>
+      <label><input type="radio" name="q3" value="3"><div class="sbtn"><span class="ico">&#128528;</span><span class="lbl">Abbastanza</span></div></label>
+      <label><input type="radio" name="q3" value="4"><div class="sbtn"><span class="ico">&#128516;</span><span class="lbl">Molto</span></div></label>
+    </div>
+  </div>
+  <div class="qcard" style="animation-delay:.16s">
+    <div class="qn">DOMANDA 4</div>
+    <div class="qt">Spiego bene le cose agli altri e riesco sempre a farmi capire, anche quando e difficile.</div>
+    <div class="scale">
+      <label><input type="radio" name="q4" value="1"><div class="sbtn"><span class="ico">&#128566;</span><span class="lbl">Per niente</span></div></label>
+      <label><input type="radio" name="q4" value="2"><div class="sbtn"><span class="ico">&#128577;</span><span class="lbl">Poco</span></div></label>
+      <label><input type="radio" name="q4" value="3"><div class="sbtn"><span class="ico">&#128528;</span><span class="lbl">Abbastanza</span></div></label>
+      <label><input type="radio" name="q4" value="4"><div class="sbtn"><span class="ico">&#128516;</span><span class="lbl">Molto</span></div></label>
+    </div>
+  </div>
+</div>
+
+<div class="s3">
+  <div class="sec-head"><div class="sec-color" style="background:#6a3ab0"></div><div class="sec-title">&#129309; Interpersonale</div></div>
+  <div class="qcard" style="animation-delay:.2s">
+    <div class="qn">DOMANDA 5</div>
+    <div class="qt">Mi piace lavorare in gruppo: riesco a collaborare e ad aiutare chi e in difficolta.</div>
+    <div class="scale">
+      <label><input type="radio" name="q5" value="1"><div class="sbtn"><span class="ico">&#128566;</span><span class="lbl">Per niente</span></div></label>
+      <label><input type="radio" name="q5" value="2"><div class="sbtn"><span class="ico">&#128577;</span><span class="lbl">Poco</span></div></label>
+      <label><input type="radio" name="q5" value="3"><div class="sbtn"><span class="ico">&#128528;</span><span class="lbl">Abbastanza</span></div></label>
+      <label><input type="radio" name="q5" value="4"><div class="sbtn"><span class="ico">&#128516;</span><span class="lbl">Molto</span></div></label>
+    </div>
+  </div>
+  <div class="qcard" style="animation-delay:.24s">
+    <div class="qn">DOMANDA 6</div>
+    <div class="qt">Capisco subito come si sente una persona, anche senza che me lo dica: noto le emozioni degli altri.</div>
+    <div class="scale">
+      <label><input type="radio" name="q6" value="1"><div class="sbtn"><span class="ico">&#128566;</span><span class="lbl">Per niente</span></div></label>
+      <label><input type="radio" name="q6" value="2"><div class="sbtn"><span class="ico">&#128577;</span><span class="lbl">Poco</span></div></label>
+      <label><input type="radio" name="q6" value="3"><div class="sbtn"><span class="ico">&#128528;</span><span class="lbl">Abbastanza</span></div></label>
+      <label><input type="radio" name="q6" value="4"><div class="sbtn"><span class="ico">&#128516;</span><span class="lbl">Molto</span></div></label>
+    </div>
+  </div>
+</div>
+
+<div class="s4">
+  <div class="sec-head"><div class="sec-color" style="background:#7c6a1a"></div><div class="sec-title">&#127807; Naturalistica</div></div>
+  <div class="qcard" style="animation-delay:.28s">
+    <div class="qn">DOMANDA 7</div>
+    <div class="qt">Mi affascinano gli animali, le piante e i fenomeni naturali: osservo l'ambiente con curiosita.</div>
+    <div class="scale">
+      <label><input type="radio" name="q7" value="1"><div class="sbtn"><span class="ico">&#128566;</span><span class="lbl">Per niente</span></div></label>
+      <label><input type="radio" name="q7" value="2"><div class="sbtn"><span class="ico">&#128577;</span><span class="lbl">Poco</span></div></label>
+      <label><input type="radio" name="q7" value="3"><div class="sbtn"><span class="ico">&#128528;</span><span class="lbl">Abbastanza</span></div></label>
+      <label><input type="radio" name="q7" value="4"><div class="sbtn"><span class="ico">&#128516;</span><span class="lbl">Molto</span></div></label>
+    </div>
+  </div>
+  <div class="qcard" style="animation-delay:.32s">
+    <div class="qn">DOMANDA 8</div>
+    <div class="qt">Noto i cambiamenti nell'ambiente: le stagioni, il tempo, i comportamenti degli animali mi incuriosiscono.</div>
+    <div class="scale">
+      <label><input type="radio" name="q8" value="1"><div class="sbtn"><span class="ico">&#128566;</span><span class="lbl">Per niente</span></div></label>
+      <label><input type="radio" name="q8" value="2"><div class="sbtn"><span class="ico">&#128577;</span><span class="lbl">Poco</span></div></label>
+      <label><input type="radio" name="q8" value="3"><div class="sbtn"><span class="ico">&#128528;</span><span class="lbl">Abbastanza</span></div></label>
+      <label><input type="radio" name="q8" value="4"><div class="sbtn"><span class="ico">&#128516;</span><span class="lbl">Molto</span></div></label>
+    </div>
+  </div>
+</div>
+
+<div class="s5">
+  <div class="sec-head"><div class="sec-color" style="background:#1a6a8a"></div><div class="sec-title">&#127939; Corporeo-cinestetica</div></div>
+  <div class="qcard" style="animation-delay:.36s">
+    <div class="qn">DOMANDA 9</div>
+    <div class="qt">Imparo meglio facendo con le mani: costruire, smontare, fare laboratori mi aiuta a capire davvero.</div>
+    <div class="scale">
+      <label><input type="radio" name="q9" value="1"><div class="sbtn"><span class="ico">&#128566;</span><span class="lbl">Per niente</span></div></label>
+      <label><input type="radio" name="q9" value="2"><div class="sbtn"><span class="ico">&#128577;</span><span class="lbl">Poco</span></div></label>
+      <label><input type="radio" name="q9" value="3"><div class="sbtn"><span class="ico">&#128528;</span><span class="lbl">Abbastanza</span></div></label>
+      <label><input type="radio" name="q9" value="4"><div class="sbtn"><span class="ico">&#128516;</span><span class="lbl">Molto</span></div></label>
+    </div>
+  </div>
+  <div class="qcard" style="animation-delay:.4s">
+    <div class="qn">DOMANDA 10</div>
+    <div class="qt">Mi piace muovermi: sport, danza, teatro, attivita pratiche mi entusiasmano molto piu di stare seduto/a.</div>
+    <div class="scale">
+      <label><input type="radio" name="q10" value="1"><div class="sbtn"><span class="ico">&#128566;</span><span class="lbl">Per niente</span></div></label>
+      <label><input type="radio" name="q10" value="2"><div class="sbtn"><span class="ico">&#128577;</span><span class="lbl">Poco</span></div></label>
+      <label><input type="radio" name="q10" value="3"><div class="sbtn"><span class="ico">&#128528;</span><span class="lbl">Abbastanza</span></div></label>
+      <label><input type="radio" name="q10" value="4"><div class="sbtn"><span class="ico">&#128516;</span><span class="lbl">Molto</span></div></label>
+    </div>
+  </div>
+</div>
+
+<div class="s6">
+  <div class="sec-head"><div class="sec-color" style="background:#8a2a6a"></div><div class="sec-title">&#127912; Visivo-spaziale</div></div>
+  <div class="qcard" style="animation-delay:.44s">
+    <div class="qn">DOMANDA 11</div>
+    <div class="qt">Penso per immagini: quando studio o ricordo qualcosa, vedo delle scene nella mia testa.</div>
+    <div class="scale">
+      <label><input type="radio" name="q11" value="1"><div class="sbtn"><span class="ico">&#128566;</span><span class="lbl">Per niente</span></div></label>
+      <label><input type="radio" name="q11" value="2"><div class="sbtn"><span class="ico">&#128577;</span><span class="lbl">Poco</span></div></label>
+      <label><input type="radio" name="q11" value="3"><div class="sbtn"><span class="ico">&#128528;</span><span class="lbl">Abbastanza</span></div></label>
+      <label><input type="radio" name="q11" value="4"><div class="sbtn"><span class="ico">&#128516;</span><span class="lbl">Molto</span></div></label>
+    </div>
+  </div>
+  <div class="qcard" style="animation-delay:.48s">
+    <div class="qn">DOMANDA 12</div>
+    <div class="qt">Mi piace disegnare, fotografare, creare oggetti visivi o costruire cose tridimensionali.</div>
+    <div class="scale">
+      <label><input type="radio" name="q12" value="1"><div class="sbtn"><span class="ico">&#128566;</span><span class="lbl">Per niente</span></div></label>
+      <label><input type="radio" name="q12" value="2"><div class="sbtn"><span class="ico">&#128577;</span><span class="lbl">Poco</span></div></label>
+      <label><input type="radio" name="q12" value="3"><div class="sbtn"><span class="ico">&#128528;</span><span class="lbl">Abbastanza</span></div></label>
+      <label><input type="radio" name="q12" value="4"><div class="sbtn"><span class="ico">&#128516;</span><span class="lbl">Molto</span></div></label>
+    </div>
+  </div>
+</div>
+
+<div class="s7">
+  <div class="sec-head"><div class="sec-color" style="background:#3a6a2a"></div><div class="sec-title">&#128161; Intrapersonale</div></div>
+  <div class="qcard" style="animation-delay:.52s">
+    <div class="qn">DOMANDA 13</div>
+    <div class="qt">Conosco i miei punti di forza e di debolezza: so bene cosa mi piace e cosa no, e perche.</div>
+    <div class="scale">
+      <label><input type="radio" name="q13" value="1"><div class="sbtn"><span class="ico">&#128566;</span><span class="lbl">Per niente</span></div></label>
+      <label><input type="radio" name="q13" value="2"><div class="sbtn"><span class="ico">&#128577;</span><span class="lbl">Poco</span></div></label>
+      <label><input type="radio" name="q13" value="3"><div class="sbtn"><span class="ico">&#128528;</span><span class="lbl">Abbastanza</span></div></label>
+      <label><input type="radio" name="q13" value="4"><div class="sbtn"><span class="ico">&#128516;</span><span class="lbl">Molto</span></div></label>
+    </div>
+  </div>
+  <div class="qcard" style="animation-delay:.56s">
+    <div class="qn">DOMANDA 14</div>
+    <div class="qt">Ho bisogno di momenti silenziosi per pensare bene: preferisco lavorare da solo/a quando devo concentrarmi.</div>
+    <div class="scale">
+      <label><input type="radio" name="q14" value="1"><div class="sbtn"><span class="ico">&#128566;</span><span class="lbl">Per niente</span></div></label>
+      <label><input type="radio" name="q14" value="2"><div class="sbtn"><span class="ico">&#128577;</span><span class="lbl">Poco</span></div></label>
+      <label><input type="radio" name="q14" value="3"><div class="sbtn"><span class="ico">&#128528;</span><span class="lbl">Abbastanza</span></div></label>
+      <label><input type="radio" name="q14" value="4"><div class="sbtn"><span class="ico">&#128516;</span><span class="lbl">Molto</span></div></label>
+    </div>
+  </div>
+</div>
+
+<div class="submit-area">
+  <button class="btn-go" id="btnGo" disabled onclick="showResults()">Scopri le mie intelligenze &#8594;</button>
+  <div class="submit-note">Rispondi a tutte le 14 domande per continuare</div>
+</div>
+</div>
+
+<!-- RESULTS -->
+<div class="wrap" id="results">
+  <div class="result-top">
+    <div class="r-emoji" id="rEmoji"></div>
+    <h2 id="rTitle"></h2>
+    <p id="rDesc"></p>
+  </div>
+  <div class="profiles-grid" id="profGrid"></div>
+  <div class="result-note">
+    <h3>&#128270; Come usare questo risultato</h3>
+    <p>Le intelligenze non sono un destino: sono un punto di partenza. Ognuno ne ha piu di una, e si allenano. Porta questo profilo al colloquio di orientamento: puo aiutarti a scegliere con piu consapevolezza.</p>
+  </div>
+  <div style="text-align:center"><button class="btn-retry" onclick="reset()">&#8635; Rifai il test</button></div>
+</div>
+
+<script>
+var profiles = [
+  { key:'lm', label:'Logico-matematica', icon:'&#128290;', color:'#c4622a', qs:[1,2],
+    desc:'Ami i numeri, la logica e capire come funzionano le cose. Sei un problem-solver nato/a.' },
+  { key:'li', label:'Linguistica', icon:'&#128218;', color:'#2a7c62', qs:[3,4],
+    desc:'Le parole sono il tuo strumento: leggi, scrivi e comunichi con naturalezza.' },
+  { key:'ip', label:'Interpersonale', icon:'&#129309;', color:'#6a3ab0', qs:[5,6],
+    desc:'Capisci le persone con empatia e sei un punto di riferimento nel gruppo.' },
+  { key:'na', label:'Naturalistica', icon:'&#127807;', color:'#7c6a1a', qs:[7,8],
+    desc:'Il mondo naturale ti affascina: osservi, classifichi, ti prendi cura dell\'ambiente.' },
+  { key:'ck', label:'Corporeo-cinestetica', icon:'&#127939;', color:'#1a6a8a', qs:[9,10],
+    desc:'Impari facendo: il tuo corpo e uno strumento di conoscenza e azione.' },
+  { key:'vs', label:'Visivo-spaziale', icon:'&#127912;', color:'#8a2a6a', qs:[11,12],
+    desc:'Pensi per immagini e hai senso dello spazio: arte e design ti parlano.' },
+  { key:'ia', label:'Intrapersonale', icon:'&#128161;', color:'#3a6a2a', qs:[13,14],
+    desc:'Ti conosci bene e gestisci le tue emozioni: la tua forza viene dall\'interno.' }
+];
+
+function getVal(n) {
+  var r = document.querySelector('input[name="q'+n+'"]:checked');
+  return r ? parseInt(r.value) : 0;
+}
+
+function updateProgress() {
+  var names = ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11','q12','q13','q14'];
+  var n = names.filter(function(nm){ return document.querySelector('input[name="'+nm+'"]:checked'); }).length;
+  document.getElementById('pFill').style.width = Math.round(n/14*100)+'%';
+  document.getElementById('pTxt').textContent = n === 14 ? 'Completato!' : n+' di 14';
+  document.getElementById('heroCount').textContent = n+' di 14 domande completate';
+  document.getElementById('btnGo').disabled = n < 14;
+  if(n === 14) document.getElementById('btnGo').textContent = '&#10024; Scopri le mie intelligenze';
+}
+
+document.querySelectorAll('input[type=radio]').forEach(function(r){ r.addEventListener('change', updateProgress); });
+
+function showResults() {
+  var scored = profiles.map(function(p) {
+    var s = p.qs.reduce(function(sum, q){ return sum + getVal(q); }, 0);
+    return { label:p.label, icon:p.icon, color:p.color, desc:p.desc, score:s, max:p.qs.length*4 };
+  });
+  scored.sort(function(a,b){ return b.score - a.score; });
+
+  document.getElementById('rEmoji').innerHTML = scored[0].icon;
+  document.getElementById('rTitle').textContent = 'La tua intelligenza principale: '+scored[0].label;
+  document.getElementById('rDesc').textContent = scored[0].desc;
+
+  var grid = document.getElementById('profGrid');
+  grid.innerHTML = '';
+  scored.forEach(function(p, i) {
+    var pct = Math.round(p.score/p.max*100);
+    var div = document.createElement('div');
+    div.className = 'pcard';
+    div.innerHTML = '<div class="p-icon">'+p.icon+'</div>'
+      +'<div class="p-name">'+p.label+'</div>'
+      +'<div class="p-pct" style="color:'+p.color+'">'+pct+'%</div>'
+      +'<div class="p-bar-bg"><div class="p-bar" id="pb'+i+'" style="background:'+p.color+'"></div></div>'
+      +'<div class="p-desc">'+p.desc+'</div>';
+    grid.appendChild(div);
+    (function(idx, val){ setTimeout(function(){ var el=document.getElementById('pb'+idx); if(el) el.style.width=val+'%'; }, 100+idx*80); })(i, pct);
+  });
+
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function reset() {
+  document.querySelectorAll('input[type=radio]').forEach(function(r){ r.checked=false; });
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('quiz').style.display = 'block';
+  document.getElementById('btnGo').disabled = true;
+  document.getElementById('btnGo').textContent = 'Scopri le mie intelligenze \u2192';
+  document.getElementById('pFill').style.width = '0%';
+  document.getElementById('pTxt').textContent = 'Inizia';
+  document.getElementById('heroCount').textContent = '0 di 14 domande completate';
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+</script>
+</body>
+</html>
