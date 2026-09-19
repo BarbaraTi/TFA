@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Il nome: mappa di consultazione</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbf9f5;
+  --card:#ffffff;
+  --ink:#1f2328;
+  --ink-soft:#4a5158;
+  --line:#d9d4cb;
+  --c1:#0b5aa8;  --c1bg:#e6f0fb;
+  --c2:#b34700;  --c2bg:#fdeee2;
+  --c3:#1f6b33;  --c3bg:#e6f4e9;
+  --c4:#6a3a9a;  --c4bg:#f0e9f8;
+  --warn:#8a1d1d; --warn-bg:#fbeaea;
+  --radius:14px;
+  --fs:1rem;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15181c; --card:#1e2228; --ink:#eceff3; --ink-soft:#b6bec7; --line:#39404a;
+    --c1:#7db6ef; --c1bg:#16283c;
+    --c2:#f3ab77; --c2bg:#3a2415;
+    --c3:#8ed49e; --c3bg:#16301f;
+    --c4:#c3a3e6; --c4bg:#2a2038;
+    --warn:#f0a1a1; --warn-bg:#3a1c1c;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15181c; --card:#1e2228; --ink:#eceff3; --ink-soft:#b6bec7; --line:#39404a;
+  --c1:#7db6ef; --c1bg:#16283c;
+  --c2:#f3ab77; --c2bg:#3a2415;
+  --c3:#8ed49e; --c3bg:#16301f;
+  --c4:#c3a3e6; --c4bg:#2a2038;
+  --warn:#f0a1a1; --warn-bg:#3a1c1c;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Atkinson Hyperlegible","Verdana","Trebuchet MS",sans-serif;
+  font-size:var(--fs);line-height:1.7;letter-spacing:.01em;text-align:left;
+}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+header.top{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between;
+  border-bottom:3px solid var(--line);padding-bottom:12px;margin-bottom:22px}
+h1{font-size:1.9rem;margin:0;line-height:1.25}
+.sub{color:var(--ink-soft);margin:4px 0 0}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+button.ctrl{font-family:inherit;font-size:.9rem;padding:7px 12px;border-radius:999px;
+  border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button.ctrl:hover{border-color:var(--ink-soft)}
+h2{font-size:1.35rem;margin:38px 0 14px;padding-left:12px;border-left:8px solid var(--line)}
+h2.k1{border-color:var(--c1);color:var(--c1)}
+h2.k2{border-color:var(--c2);color:var(--c2)}
+h2.k3{border-color:var(--c3);color:var(--c3)}
+h2.k4{border-color:var(--c4);color:var(--c4)}
+h3{font-size:1.05rem;margin:0 0 8px}
+p{margin:.5em 0}
+.card{background:var(--card);border:2px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin:14px 0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.k1{border-color:var(--c1)} .k2{border-color:var(--c2)} .k3{border-color:var(--c3)} .k4{border-color:var(--c4)}
+.card.k1 h3{color:var(--c1)} .card.k2 h3{color:var(--c2)} .card.k3 h3{color:var(--c3)} .card.k4 h3{color:var(--c4)}
+.tag{display:inline-block;font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:8px}
+.tag.k1{background:var(--c1bg);color:var(--c1)}
+.tag.k2{background:var(--c2bg);color:var(--c2)}
+.tag.k3{background:var(--c3bg);color:var(--c3)}
+.tag.k4{background:var(--c4bg);color:var(--c4)}
+.es{display:block;background:var(--bg);border-radius:8px;padding:8px 12px;margin:8px 0;font-style:italic}
+.es b{font-style:normal}
+ul{margin:.4em 0;padding-left:1.2em}
+li{margin:.3em 0}
+.tablewrap{overflow-x:auto;border-radius:var(--radius);border:2px solid var(--line);margin:14px 0}
+table{border-collapse:collapse;width:100%;min-width:560px;background:var(--card)}
+th,td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+thead th{background:var(--bg);font-size:.9rem}
+td.hi{font-weight:700}
+td.t1{color:var(--c1);background:var(--c1bg)}
+td.t2{color:var(--c2);background:var(--c2bg)}
+td.t3{color:var(--c3);background:var(--c3bg)}
+td.t4{color:var(--c4);background:var(--c4bg)}
+.tree{display:grid;gap:10px}
+.branch{background:var(--card);border:2px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.branch b.lab{display:inline-block;min-width:150px}
+.steps{counter-reset:s;display:grid;gap:12px}
+.step{background:var(--card);border:2px solid var(--line);border-radius:var(--radius);padding:14px 16px 14px 58px;position:relative}
+.step::before{counter-increment:s;content:counter(s);position:absolute;left:14px;top:14px;width:30px;height:30px;
+  border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700}
+.warnbox{background:var(--warn-bg);border-color:var(--warn)}
+.warnbox h3{color:var(--warn)}
+.memo{background:var(--card);border:3px dashed var(--line);border-radius:var(--radius);padding:16px 18px}
+.memo ul{list-style:none;padding-left:0}
+.memo li{padding-left:26px;position:relative}
+.memo li::before{content:"\2713";position:absolute;left:0;font-weight:700}
+.quiz-item{border-top:1px solid var(--line);padding:12px 0}
+.quiz-item:first-of-type{border-top:0}
+.q{font-weight:700;margin-bottom:8px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{font-family:inherit;font-size:1rem;padding:8px 16px;border-radius:10px;cursor:pointer;
+  border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.opt:hover{border-color:var(--ink-soft)}
+.opt.ok{background:var(--c3bg);border-color:var(--c3);color:var(--c3);font-weight:700}
+.opt.no{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)}
+.fb{margin-top:8px;font-size:.95rem;color:var(--ink-soft);min-height:1.2em}
+footer{margin-top:40px;padding-top:14px;border-top:2px solid var(--line);color:var(--ink-soft);font-size:.85rem}
+@media print{
+  :root{--bg:#fff;--card:#fff;--ink:#000;--ink-soft:#333;--line:#999}
+  .controls,.noprint{display:none !important}
+  body{font-size:11pt}
+  .card,.step,.tablewrap,.memo,.branch{break-inside:avoid;page-break-inside:avoid}
+  h2{page-break-after:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <h1>Il nome</h1>
+    <p class="sub">Mappa di consultazione rapida: significato, genere, numero, forma</p>
+  </div>
+  <div class="controls noprint">
+    <button class="ctrl" id="bigger">A+ testo</button>
+    <button class="ctrl" id="smaller">A&minus; testo</button>
+    <button class="ctrl" id="theme">Chiaro / scuro</button>
+    <button class="ctrl" id="print">Stampa</button>
+  </div>
+</header>
+
+<div class="card">
+  <p><b>Il nome (o sostantivo) indica persone, animali, cose, luoghi, idee, sentimenti.</b>
+  Di ogni nome posso dire quattro cose, e sono sempre le stesse quattro.</p>
+</div>
+
+<div class="grid2">
+  <div class="card k1"><span class="tag k1">1. SIGNIFICATO</span><p>Che cosa indica: comune o proprio, concreto o astratto, individuale o collettivo.</p></div>
+  <div class="card k2"><span class="tag k2">2. GENERE</span><p>Maschile o femminile.</p></div>
+  <div class="card k3"><span class="tag k3">3. NUMERO</span><p>Singolare o plurale.</p></div>
+  <div class="card k4"><span class="tag k4">4. FORMA</span><p>Com'è fatto: primitivo, derivato, alterato, composto.</p></div>
+</div>
+
+<p class="card"><b>Analisi tipo:</b> <i>ragazze</i> = nome comune di persona, concreto, individuale, femminile, plurale, primitivo.</p>
+
+<h2 class="k1">1. Il significato</h2>
+
+<div class="grid3">
+  <div class="card k1">
+    <h3>Comune o proprio</h3>
+    <ul>
+      <li><b>Comune</b>: indica un elemento qualsiasi di una categoria. <i>città, cane, bambina</i></li>
+      <li><b>Proprio</b>: indica un elemento unico e va con la <b>maiuscola</b>. <i>Udine, Fido, Sofia</i></li>
+    </ul>
+  </div>
+  <div class="card k1">
+    <h3>Concreto o astratto</h3>
+    <ul>
+      <li><b>Concreto</b>: lo percepisco con i sensi, lo posso vedere o toccare. <i>tavolo, vento, pane</i></li>
+      <li><b>Astratto</b>: esiste solo nel pensiero. <i>libertà, paura, amicizia</i></li>
+    </ul>
+  </div>
+  <div class="card k1">
+    <h3>Individuale o collettivo</h3>
+    <ul>
+      <li><b>Individuale</b>: al singolare indica un solo elemento. <i>albero, soldato, pecora</i></li>
+      <li><b>Collettivo</b>: al singolare indica un <b>insieme</b>. <i>bosco, esercito, gregge, classe</i></li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="k2">2. Il genere: maschile o femminile</h2>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>Caso</th><th>Maschile</th><th>Femminile</th></tr></thead>
+  <tbody>
+    <tr><td>Cambia solo la finale <b>-o / -a</b></td><td class="hi t2">il ragazzo</td><td class="hi t2">la ragazza</td></tr>
+    <tr><td>Finale <b>-e</b> che diventa <b>-a</b></td><td class="hi t2">il signore</td><td class="hi t2">la signora</td></tr>
+    <tr><td>Finale <b>-tore</b> che diventa <b>-trice</b></td><td class="hi t2">l'attore, lo scrittore</td><td class="hi t2">l'attrice, la scrittrice</td></tr>
+    <tr><td>Finale <b>-essa</b></td><td class="hi t2">il dottore, il professore</td><td class="hi t2">la dottoressa, la professoressa</td></tr>
+    <tr><td><b>Nomi indipendenti</b>: parole del tutto diverse</td><td class="hi t2">uomo, fratello, padre, toro</td><td class="hi t2">donna, sorella, madre, mucca</td></tr>
+    <tr><td><b>Genere comune</b>: stessa parola, cambia l'articolo</td><td class="hi t2">il nipote, il cantante, il preside</td><td class="hi t2">la nipote, la cantante, la preside</td></tr>
+    <tr><td><b>Promiscui</b>: un solo genere per i due sessi</td><td colspan="2" class="hi t2">la giraffa maschio / femmina, l'aquila maschio / femmina</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="card warnbox">
+  <h3>Attenzione</h3>
+  <p>La finale <b>-a</b> non vuol dire sempre femminile e la finale <b>-o</b> non vuol dire sempre maschile.</p>
+  <ul>
+    <li>Maschili in -a: <b>il</b> problema, <b>il</b> poeta, <b>il</b> pianeta, <b>il</b> panorama</li>
+    <li>Femminili in -o: <b>la</b> mano, <b>la</b> radio, <b>la</b> moto, <b>la</b> foto</li>
+  </ul>
+  <p>Nel dubbio guardo <b>l'articolo</b>, non la lettera finale.</p>
+</div>
+
+<h2 class="k3">3. Il numero: singolare o plurale</h2>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>Se il singolare finisce in...</th><th>Il plurale finisce in...</th><th>Esempio</th></tr></thead>
+  <tbody>
+    <tr><td><b>-o</b> (maschile)</td><td class="hi t3">-i</td><td>libro &rarr; libri</td></tr>
+    <tr><td><b>-a</b> (femminile)</td><td class="hi t3">-e</td><td>casa &rarr; case</td></tr>
+    <tr><td><b>-a</b> (maschile)</td><td class="hi t3">-i</td><td>poeta &rarr; poeti, problema &rarr; problemi</td></tr>
+    <tr><td><b>-e</b> (maschile o femminile)</td><td class="hi t3">-i</td><td>pesce &rarr; pesci, chiave &rarr; chiavi</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>I casi particolari</h3>
+
+<div class="grid2">
+  <div class="card k3">
+    <h3>Nomi in -co e -go</h3>
+    <ul>
+      <li>Accento sulla <b>penultima</b> sillaba: di solito <b>-chi, -ghi</b>. <i>fuoco &rarr; fuochi, lago &rarr; laghi</i></li>
+      <li>Accento sulla <b>terzultima</b>: di solito <b>-ci, -gi</b>. <i>medico &rarr; medici, asparago &rarr; asparagi</i></li>
+      <li>Eccezioni da ricordare a memoria: <i>amico &rarr; amici, greco &rarr; greci, porco &rarr; porci</i></li>
+    </ul>
+  </div>
+  <div class="card k3">
+    <h3>Nomi in -cia e -gia</h3>
+    <ul>
+      <li>Prima di -cia/-gia c'è una <b>vocale</b>: resta la <b>i</b>. <i>camicia &rarr; camicie, valigia &rarr; valigie</i></li>
+      <li>Prima c'è una <b>consonante</b>: la <b>i</b> cade. <i>arancia &rarr; arance, spiaggia &rarr; spiagge</i></li>
+    </ul>
+  </div>
+  <div class="card k3">
+    <h3>Nomi in -io</h3>
+    <ul>
+      <li>La <b>i</b> è accentata: doppia i. <i>zio &rarr; zii, pendio &rarr; pendii</i></li>
+      <li>La <b>i</b> non è accentata: una sola i. <i>figlio &rarr; figli, armadio &rarr; armadi</i></li>
+    </ul>
+  </div>
+  <div class="card k3">
+    <h3>Nomi invariabili</h3>
+    <p>Singolare e plurale uguali. Cambia solo l'articolo.</p>
+    <ul>
+      <li>Monosillabi: <i>il re / i re</i></li>
+      <li>Con accento finale: <i>la città / le città, il caffè / i caffè</i></li>
+      <li>Stranieri: <i>il computer / i computer, lo sport / gli sport</i></li>
+      <li>Abbreviati: <i>la foto / le foto, il cinema / i cinema</i></li>
+      <li>Femminili in -i: <i>la crisi / le crisi</i></li>
+    </ul>
+  </div>
+  <div class="card k3">
+    <h3>Nomi difettivi</h3>
+    <p>Hanno un numero solo.</p>
+    <ul>
+      <li>Solo singolare: <i>il latte, il sangue, la fame, il coraggio</i></li>
+      <li>Solo plurale: <i>le forbici, gli occhiali, i pantaloni, le nozze</i></li>
+    </ul>
+  </div>
+  <div class="card k3">
+    <h3>Nomi sovrabbondanti</h3>
+    <p>Due plurali con significato diverso.</p>
+    <ul>
+      <li>il braccio &rarr; <b>le braccia</b> (del corpo) / <b>i bracci</b> (della gru)</li>
+      <li>il muro &rarr; <b>le mura</b> (della città) / <b>i muri</b> (della casa)</li>
+      <li>il dito &rarr; <b>le dita</b> (tutte insieme) / <b>i diti</b> (presi uno per uno)</li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="k4">4. La forma: com'è fatto il nome</h2>
+
+<div class="card">
+  <p>Ogni nome è fatto di due pezzi: la <b>radice</b>, che porta il significato, e la <b>desinenza</b>, che dice genere e numero.</p>
+  <span class="es">cas- (radice) + -a (desinenza) = <b>casa</b> &nbsp;&nbsp; cas- + -e = <b>case</b></span>
+</div>
+
+<div class="tree">
+  <div class="branch k4"><b class="lab">Primitivo</b> solo radice e desinenza, non deriva da altri nomi. <i>fiore, latte, libro</i></div>
+  <div class="branch k4"><b class="lab">Derivato</b> nasce dal primitivo con un prefisso o un suffisso, e cambia significato. <i>fioraio, fioriera, latteria, libreria</i></div>
+  <div class="branch k4"><b class="lab">Alterato</b> resta lo stesso oggetto, cambia solo la sfumatura. <i>librone, libretto</i></div>
+  <div class="branch k4"><b class="lab">Composto</b> unisce due parole. <i>capostazione, portachiavi, asciugamano, pescespada</i></div>
+</div>
+
+<h3>I quattro alterati</h3>
+<div class="tablewrap">
+<table>
+  <thead><tr><th>Tipo</th><th>Suffissi</th><th>Esempio</th></tr></thead>
+  <tbody>
+    <tr><td class="hi t4">Diminutivo (più piccolo)</td><td>-ino, -etto, -ello</td><td>tavolino, casetta, alberello</td></tr>
+    <tr><td class="hi t4">Accrescitivo (più grande)</td><td>-one</td><td>tavolone, portone</td></tr>
+    <tr><td class="hi t4">Vezzeggiativo (affetto)</td><td>-uccio, -otto, -acchiotto</td><td>tesoruccio, orsacchiotto</td></tr>
+    <tr><td class="hi t4">Dispregiativo (in senso negativo)</td><td>-accio, -astro, -ucolo</td><td>tempaccio, poetucolo</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="card warnbox">
+  <h3>Falsi alterati</h3>
+  <p>Sembrano alterati per la finale, ma indicano un'altra cosa. Non sono alterati.</p>
+  <ul>
+    <li><b>tacchino</b> non è un piccolo tacco</li>
+    <li><b>focaccia</b> non è una brutta foca</li>
+    <li><b>mattone</b> non è un grande matto</li>
+    <li><b>burrone</b> non è un grande burro</li>
+    <li><b>lampone, bottone, rubinetto, collina</b></li>
+  </ul>
+  <p><b>Prova rapida:</b> tolgo il suffisso. Se resta lo stesso oggetto, è un alterato. Se cambia oggetto, è un falso alterato.</p>
+</div>
+
+<h2>5. Come faccio l'analisi di un nome</h2>
+
+<div class="steps">
+  <div class="step">
+    <h3>Che cosa indica?</h3>
+    <p>Comune o proprio, di persona, animale o cosa, concreto o astratto, individuale o collettivo.</p>
+  </div>
+  <div class="step">
+    <h3>Genere e numero</h3>
+    <p>Maschile o femminile, singolare o plurale. Se sono in dubbio provo a mettere l'articolo davanti.</p>
+  </div>
+  <div class="step">
+    <h3>Com'è fatto?</h3>
+    <p>Primitivo, derivato, alterato (e quale dei quattro) o composto.</p>
+  </div>
+</div>
+
+<div class="card">
+  <p><b>Esempi svolti</b></p>
+  <ul>
+    <li><i>gattino</i>: nome comune di animale, concreto, individuale, maschile, singolare, alterato diminutivo di gatto.</li>
+    <li><i>Milano</i>: nome proprio di luogo, concreto, individuale, maschile, singolare, primitivo.</li>
+    <li><i>gregge</i>: nome comune di animale, concreto, collettivo, maschile, singolare, primitivo.</li>
+    <li><i>felicità</i>: nome comune di cosa, astratto, individuale, femminile, invariabile, derivato da felice.</li>
+  </ul>
+</div>
+
+<h2>6. Memo: in dieci secondi</h2>
+
+<div class="memo">
+  <ul>
+    <li>Quattro domande sempre nello stesso ordine: <b>significato, genere, numero, forma</b>.</li>
+    <li>La lettera finale inganna: <b>il</b> problema, <b>la</b> mano. Guardo l'articolo.</li>
+    <li>Collettivo: singolare che indica <b>tanti</b>. Gregge, classe, sciame.</li>
+    <li>Alterato: <b>stesso</b> oggetto, sfumatura diversa. Se l'oggetto cambia, è un falso alterato.</li>
+  </ul>
+</div>
+
+<h2 class="noprint">7. Verifica veloce</h2>
+
+<div class="card noprint" id="quiz">
+  <p class="sub">Scegli la risposta corretta. La spiegazione appare subito.</p>
+</div>
+
+<footer>
+  Materiale di consultazione per la scuola secondaria di primo grado, in versione accessibile.
+  Struttura coerente con la scheda sugli articoli della stessa serie.
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var size = 100;
+  document.getElementById('bigger').addEventListener('click', function(){
+    size = Math.min(size + 12, 160);
+    document.documentElement.style.setProperty('--fs', (size/100) + 'rem');
+  });
+  document.getElementById('smaller').addEventListener('click', function(){
+    size = Math.max(size - 12, 76);
+    document.documentElement.style.setProperty('--fs', (size/100) + 'rem');
+  });
+  document.getElementById('theme').addEventListener('click', function(){
+    var cur = document.documentElement.getAttribute('data-theme');
+    var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', cur ? (cur === 'dark' ? 'light' : 'dark') : (dark ? 'light' : 'dark'));
+  });
+  document.getElementById('print').addEventListener('click', function(){ window.print(); });
+
+  var items = [
+    {q:"\u201cGregge\u201d è un nome...", o:["individuale","collettivo","astratto"], a:1, f:"Al singolare indica un insieme di pecore, quindi è collettivo."},
+    {q:"Il plurale di \u201camico\u201d è...", o:["amichi","amici"], a:1, f:"Amico è una delle eccezioni da ricordare a memoria, insieme a greco e porco."},
+    {q:"Il plurale di \u201carancia\u201d è...", o:["arance","arancie"], a:0, f:"Prima di -cia c'è una consonante, quindi la i cade: arance. Camicia invece fa camicie."},
+    {q:"\u201cIl problema\u201d è un nome...", o:["femminile","maschile"], a:1, f:"Finisce in -a ma è maschile. Lo dice l'articolo: il problema, i problemi."},
+    {q:"\u201cTacchino\u201d è...", o:["un alterato diminutivo","un falso alterato"], a:1, f:"Non è un piccolo tacco: indica un altro animale, quindi è un falso alterato."},
+    {q:"\u201cLe forbici\u201d è un nome...", o:["invariabile","difettivo (solo plurale)"], a:1, f:"Non ha il singolare: è difettivo. Invariabile sarebbe la città / le città."},
+    {q:"Il plurale di \u201czio\u201d è...", o:["zi","zii"], a:1, f:"La i di zio è accentata, quindi al plurale restano due i: zii."},
+    {q:"\u201cLibreria\u201d rispetto a \u201clibro\u201d è un nome...", o:["alterato","derivato"], a:1, f:"Cambia l'oggetto: non è un libro particolare ma un negozio, quindi è derivato."},
+    {q:"\u201cLa mano\u201d al plurale fa...", o:["le mani","le mane"], a:0, f:"Femminile in -o, plurale irregolare: le mani."},
+    {q:"\u201cLe braccia\u201d e \u201ci bracci\u201d sono due plurali di braccio: il nome è...", o:["sovrabbondante","invariabile"], a:0, f:"Due plurali con significato diverso: le braccia del corpo, i bracci della gru."}
+  ];
+  var box = document.getElementById('quiz');
+  items.forEach(function(it, i){
+    var d = document.createElement('div'); d.className = 'quiz-item';
+    var q = document.createElement('div'); q.className = 'q'; q.textContent = (i+1) + '. ' + it.q;
+    var opts = document.createElement('div'); opts.className = 'opts';
+    var fb = document.createElement('div'); fb.className = 'fb';
+    it.o.forEach(function(text, j){
+      var b = document.createElement('button');
+      b.className = 'opt'; b.type = 'button'; b.textContent = text;
+      b.addEventListener('click', function(){
+        if (j === it.a){ b.className = 'opt ok'; fb.textContent = 'Giusto. ' + it.f; }
+        else { b.className = 'opt no'; fb.textContent = 'Non è questa. ' + it.f; }
+      });
+      opts.appendChild(b);
+    });
+    d.appendChild(q); d.appendChild(opts); d.appendChild(fb);
+    box.appendChild(d);
+  });
+})();
+</script>
+</body>
+</html>
