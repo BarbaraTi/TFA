@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gli articoli: mappa di consultazione</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbf9f5;
+  --card:#ffffff;
+  --ink:#1f2328;
+  --ink-soft:#4a5158;
+  --line:#d9d4cb;
+  --det:#0b5aa8;
+  --det-bg:#e6f0fb;
+  --indet:#b34700;
+  --indet-bg:#fdeee2;
+  --part:#1f6b33;
+  --part-bg:#e6f4e9;
+  --warn:#8a1d1d;
+  --warn-bg:#fbeaea;
+  --radius:14px;
+  --fs:1rem;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15181c;
+    --card:#1e2228;
+    --ink:#eceff3;
+    --ink-soft:#b6bec7;
+    --line:#39404a;
+    --det:#7db6ef;
+    --det-bg:#16283c;
+    --indet:#f3ab77;
+    --indet-bg:#3a2415;
+    --part:#8ed49e;
+    --part-bg:#16301f;
+    --warn:#f0a1a1;
+    --warn-bg:#3a1c1c;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15181c;
+  --card:#1e2228;
+  --ink:#eceff3;
+  --ink-soft:#b6bec7;
+  --line:#39404a;
+  --det:#7db6ef;
+  --det-bg:#16283c;
+  --indet:#f3ab77;
+  --indet-bg:#3a2415;
+  --part:#8ed49e;
+  --part-bg:#16301f;
+  --warn:#f0a1a1;
+  --warn-bg:#3a1c1c;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Atkinson Hyperlegible","Verdana","Trebuchet MS",sans-serif;
+  font-size:var(--fs);
+  line-height:1.7;
+  letter-spacing:.01em;
+  text-align:left;
+}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+header.top{
+  display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between;
+  border-bottom:3px solid var(--line);padding-bottom:12px;margin-bottom:22px;
+}
+h1{font-size:1.9rem;margin:0;line-height:1.25}
+.sub{color:var(--ink-soft);margin:4px 0 0}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+button.ctrl{
+  font-family:inherit;font-size:.9rem;padding:7px 12px;border-radius:999px;
+  border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;
+}
+button.ctrl:hover{border-color:var(--ink-soft)}
+h2{
+  font-size:1.35rem;margin:38px 0 14px;padding-left:12px;
+  border-left:8px solid var(--line);
+}
+h3{font-size:1.05rem;margin:0 0 8px}
+p{margin:.5em 0}
+.card{
+  background:var(--card);border:2px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;margin:14px 0;
+}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.det{border-color:var(--det)}
+.indet{border-color:var(--indet)}
+.part{border-color:var(--part)}
+.det h3{color:var(--det)}
+.indet h3{color:var(--indet)}
+.part h3{color:var(--part)}
+.tag{
+  display:inline-block;font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:999px;
+  margin-bottom:8px;
+}
+.tag.det{background:var(--det-bg);color:var(--det)}
+.tag.indet{background:var(--indet-bg);color:var(--indet)}
+.tag.part{background:var(--part-bg);color:var(--part)}
+.es{
+  display:block;background:var(--bg);border-radius:8px;padding:8px 12px;margin:8px 0;
+  font-style:italic;
+}
+.es b{font-style:normal}
+.es.det b{color:var(--det)}
+.es.indet b{color:var(--indet)}
+.es.part b{color:var(--part)}
+ul{margin:.4em 0;padding-left:1.2em}
+li{margin:.3em 0}
+.tablewrap{overflow-x:auto;border-radius:var(--radius);border:2px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:640px;background:var(--card)}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+thead th{background:var(--bg);font-size:.9rem}
+th.cdet{color:var(--det)}
+th.cindet{color:var(--indet)}
+th.cpart{color:var(--part)}
+tbody th{font-weight:400;font-size:.95rem;color:var(--ink-soft)}
+td.art{font-weight:700;font-size:1.15rem}
+td.a-det{color:var(--det);background:var(--det-bg)}
+td.a-indet{color:var(--indet);background:var(--indet-bg)}
+td.a-part{color:var(--part);background:var(--part-bg)}
+tr.m1 td:first-child,tr.m2 td:first-child{border-left:0}
+.rowlab{font-weight:700;color:var(--ink)}
+.steps{counter-reset:s;display:grid;gap:12px}
+.step{
+  background:var(--card);border:2px solid var(--line);border-radius:var(--radius);
+  padding:14px 16px 14px 58px;position:relative;
+}
+.step::before{
+  counter-increment:s;content:counter(s);
+  position:absolute;left:14px;top:14px;width:30px;height:30px;border-radius:50%;
+  background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700;
+}
+.warnbox{background:var(--warn-bg);border-color:var(--warn)}
+.warnbox h3{color:var(--warn)}
+.memo{background:var(--card);border:3px dashed var(--line);border-radius:var(--radius);padding:16px 18px}
+.memo ul{list-style:none;padding-left:0}
+.memo li{padding-left:26px;position:relative}
+.memo li::before{content:"\2713";position:absolute;left:0;font-weight:700}
+.quiz-item{border-top:1px solid var(--line);padding:12px 0}
+.quiz-item:first-of-type{border-top:0}
+.q{font-weight:700;margin-bottom:8px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{
+  font-family:inherit;font-size:1rem;padding:8px 16px;border-radius:10px;cursor:pointer;
+  border:2px solid var(--line);background:var(--bg);color:var(--ink);
+}
+.opt:hover{border-color:var(--ink-soft)}
+.opt.ok{background:var(--part-bg);border-color:var(--part);color:var(--part);font-weight:700}
+.opt.no{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)}
+.fb{margin-top:8px;font-size:.95rem;color:var(--ink-soft);min-height:1.2em}
+footer{margin-top:40px;padding-top:14px;border-top:2px solid var(--line);color:var(--ink-soft);font-size:.85rem}
+@media print{
+  :root{--bg:#fff;--card:#fff;--ink:#000;--ink-soft:#333;--line:#999}
+  .controls,.noprint{display:none !important}
+  body{font-size:11pt}
+  .card,.step,.tablewrap,.memo{break-inside:avoid;page-break-inside:avoid}
+  h2{page-break-after:avoid}
+  a{text-decoration:none;color:#000}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <h1>Gli articoli</h1>
+    <p class="sub">Mappa di consultazione rapida: determinativo, indeterminativo, partitivo</p>
+  </div>
+  <div class="controls noprint">
+    <button class="ctrl" id="bigger">A+ testo</button>
+    <button class="ctrl" id="smaller">A&minus; testo</button>
+    <button class="ctrl" id="theme">Chiaro / scuro</button>
+    <button class="ctrl" id="print">Stampa</button>
+  </div>
+</header>
+
+<div class="card">
+  <p><b>L'articolo non sta mai da solo.</b> Sta sempre davanti al nome e ci dice due cose:
+  se la persona o la cosa di cui parliamo è <b>conosciuta</b> oppure <b>no</b>, e se è <b>una</b>, <b>tante</b> o <b>una parte</b>.</p>
+</div>
+
+<h2>1. Tre articoli, tre significati</h2>
+
+<div class="grid3">
+  <div class="card det">
+    <span class="tag det">DETERMINATIVO</span>
+    <h3>Lo conosciamo</h3>
+    <p>Indica una persona, un animale o una cosa <b>precisa</b>, che chi parla e chi ascolta già conoscono.</p>
+    <span class="es det">In cortile c'è <b>il</b> cane.</span>
+    <p>Vuol dire: quel cane lì, il mio, il tuo, quello di cui abbiamo già parlato.</p>
+    <p><b>Forme:</b> il, lo, l', la, i, gli, le</p>
+  </div>
+
+  <div class="card indet">
+    <span class="tag indet">INDETERMINATIVO</span>
+    <h3>Non lo conosciamo</h3>
+    <p>Indica <b>uno qualunque</b>, non ancora conosciuto o nominato per la prima volta.</p>
+    <span class="es indet">In cortile c'è <b>un</b> cane.</span>
+    <p>Vuol dire: un cane che non ho mai visto, un cane qualsiasi.</p>
+    <p><b>Forme:</b> un, uno, una, un' (solo singolare)</p>
+  </div>
+
+  <div class="card part">
+    <span class="tag part">PARTITIVO</span>
+    <h3>Una parte, una quantità imprecisa</h3>
+    <p>Indica <b>una parte</b> di un insieme o una quantità che non conto e non preciso. È il <b>plurale</b> dell'indeterminativo.</p>
+    <span class="es part">In cortile ci sono <b>dei</b> cani.</span>
+    <span class="es part">Ho comprato <b>del</b> pane.</span>
+    <p><b>Forme:</b> del, dello, dell', della, dei, degli, delle</p>
+  </div>
+</div>
+
+<h2>2. La forma: tabella unica</h2>
+
+<p>La forma dipende da <b>due cose</b>: il <b>genere</b> del nome (maschile o femminile) e la <b>lettera iniziale</b> del nome.</p>
+
+<div class="tablewrap">
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2">Il nome è...</th>
+      <th colspan="2" class="cdet">Determinativo</th>
+      <th class="cindet">Indeterminativo</th>
+      <th colspan="2" class="cpart">Partitivo</th>
+    </tr>
+    <tr>
+      <th class="cdet">singolare</th>
+      <th class="cdet">plurale</th>
+      <th class="cindet">solo singolare</th>
+      <th class="cpart">singolare</th>
+      <th class="cpart">plurale</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th><span class="rowlab">Maschile</span><br>inizia per consonante<br><small>cane, libro, tavolo</small></th>
+      <td class="art a-det">il</td><td class="art a-det">i</td>
+      <td class="art a-indet">un</td>
+      <td class="art a-part">del</td><td class="art a-part">dei</td>
+    </tr>
+    <tr>
+      <th><span class="rowlab">Maschile</span><br>inizia per <b>z, s+consonante, x, y, ps, gn, pn</b><br><small>zio, studente, gnomo, psicologo</small></th>
+      <td class="art a-det">lo</td><td class="art a-det">gli</td>
+      <td class="art a-indet">uno</td>
+      <td class="art a-part">dello</td><td class="art a-part">degli</td>
+    </tr>
+    <tr>
+      <th><span class="rowlab">Maschile</span><br>inizia per vocale<br><small>albero, amico, orso</small></th>
+      <td class="art a-det">l'</td><td class="art a-det">gli</td>
+      <td class="art a-indet">un</td>
+      <td class="art a-part">dell'</td><td class="art a-part">degli</td>
+    </tr>
+    <tr>
+      <th><span class="rowlab">Femminile</span><br>inizia per consonante<br><small>casa, strada, pentola</small></th>
+      <td class="art a-det">la</td><td class="art a-det">le</td>
+      <td class="art a-indet">una</td>
+      <td class="art a-part">della</td><td class="art a-part">delle</td>
+    </tr>
+    <tr>
+      <th><span class="rowlab">Femminile</span><br>inizia per vocale<br><small>amica, unghia, ora</small></th>
+      <td class="art a-det">l'</td><td class="art a-det">le</td>
+      <td class="art a-indet">un'</td>
+      <td class="art a-part">dell'</td><td class="art a-part">delle</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2>3. Come scelgo? Tre domande in fila</h2>
+
+<div class="steps">
+  <div class="step">
+    <h3>Il nome è maschile o femminile? Singolare o plurale?</h3>
+    <p>Esempio: <i>zaino</i> è maschile singolare. <i>amiche</i> è femminile plurale.</p>
+  </div>
+  <div class="step">
+    <h3>Con quale lettera comincia il nome?</h3>
+    <p>Vocale, consonante normale, oppure una di queste: <b>z, s+consonante, x, y, ps, gn, pn</b>.
+    Attenzione: guardo la parola che viene <b>subito dopo</b> l'articolo.
+    <i>lo</i> studente, ma <i>il</i> bravo studente.</p>
+  </div>
+  <div class="step">
+    <h3>Di che cosa sto parlando?</h3>
+    <ul>
+      <li>Cosa <b>precisa e già conosciuta</b>: determinativo. <i>Passami <b>il</b> libro.</i></li>
+      <li>Cosa <b>qualunque o nuova</b>: indeterminativo. <i>Passami <b>un</b> libro.</i></li>
+      <li><b>Quantità imprecisa</b> o plurale di "un": partitivo. <i>Passami <b>dei</b> libri.</i></li>
+    </ul>
+  </div>
+</div>
+
+<h2>4. Quando si usa</h2>
+
+<div class="grid3">
+  <div class="card det">
+    <span class="tag det">DETERMINATIVO</span>
+    <ul>
+      <li>Cosa <b>unica</b> al mondo<br><span class="es det"><b>La</b> luna è gialla.</span></li>
+      <li>Un'intera <b>specie o categoria</b><br><span class="es det"><b>Il</b> leone vive in Africa.</span></li>
+      <li>Cosa di cui <b>si è già parlato</b><br><span class="es det">Sono andato a una festa; <b>la</b> festa è stata divertente.</span></li>
+      <li>Al posto di <b>questo</b><br><span class="es det">Entro <b>la</b> primavera = entro questa primavera.</span></li>
+      <li>Al posto di <b>ogni</b><br><span class="es det"><b>Il</b> sabato vado in piscina = ogni sabato.</span></li>
+    </ul>
+  </div>
+
+  <div class="card indet">
+    <span class="tag indet">INDETERMINATIVO</span>
+    <ul>
+      <li>Una cosa <b>qualunque</b><br><span class="es indet">Prendi <b>una</b> matita e scrivi.</span></li>
+      <li>Una cosa che <b>non voglio precisare</b><br><span class="es indet">Mi ha telefonato <b>un</b> amico.</span></li>
+      <li>Una cosa nominata per la <b>prima volta</b><br><span class="es indet">In corso Marconi c'è <b>una</b> scuola.</span></li>
+    </ul>
+  </div>
+
+  <div class="card part">
+    <span class="tag part">PARTITIVO</span>
+    <ul>
+      <li><b>Plurale</b> dell'indeterminativo (= alcuni, qualche)<br><span class="es part">Ho visto <b>un</b> amico. &rarr; Ho visto <b>degli</b> amici.</span></li>
+      <li>Quantità <b>non numerabile</b> e imprecisa (= un po' di)<br><span class="es part">Vorrei <b>dell'</b>acqua e <b>del</b> formaggio.</span></li>
+      <li>Si può sostituire con <b>alcuni / alcune / un po' di / qualche</b><br><span class="es part">Compra <b>delle</b> mele = compra <b>alcune</b> mele.</span></li>
+    </ul>
+    <p><b>Come si forma:</b> preposizione <b>di</b> + articolo determinativo.<br>
+    di + il = <b>del</b> &nbsp; di + lo = <b>dello</b> &nbsp; di + l' = <b>dell'</b><br>
+    di + la = <b>della</b> &nbsp; di + i = <b>dei</b> &nbsp; di + gli = <b>degli</b> &nbsp; di + le = <b>delle</b></p>
+  </div>
+</div>
+
+<h2>5. Attenzione: gli errori più frequenti</h2>
+
+<div class="grid2">
+  <div class="card warnbox">
+    <h3>Apostrofo sì, apostrofo no</h3>
+    <ul>
+      <li><b>un</b> albero, <b>un</b> amico (maschile: <b>senza</b> apostrofo)</li>
+      <li><b>un'</b>amica, <b>un'</b>unghia (femminile: <b>con</b> apostrofo)</li>
+      <li>Trucco: se posso dire "uno", scrivo <b>un</b> senza apostrofo.</li>
+    </ul>
+  </div>
+  <div class="card warnbox">
+    <h3>Il gruppo di "lo / gli / uno"</h3>
+    <ul>
+      <li><b>lo</b> zio, <b>lo</b> studente, <b>lo</b> sport, <b>lo</b> psicologo, <b>lo</b> gnomo, <b>lo</b> yogurt, <b>lo</b> xilofono</li>
+      <li>Plurale sempre <b>gli</b>: gli zii, gli studenti, gli sport</li>
+      <li>Davanti a vocale il plurale maschile è <b>gli</b>: <b>gli</b> articoli, <b>gli</b> orsi</li>
+    </ul>
+  </div>
+  <div class="card warnbox">
+    <h3>Non esiste</h3>
+    <ul>
+      <li><s>li</s> articoli &rarr; <b>gli</b> articoli</li>
+      <li><s>il</s> esercito &rarr; <b>l'</b>esercito</li>
+      <li><s>un</s> associazione &rarr; <b>un'</b>associazione</li>
+    </ul>
+  </div>
+  <div class="card warnbox">
+    <h3>Guarda la parola che segue</h3>
+    <ul>
+      <li><b>lo</b> spazzolino, ma <b>il</b> nuovo spazzolino</li>
+      <li><b>l'</b>amico, ma <b>il</b> mio amico</li>
+      <li>L'articolo si accorda con la parola che viene subito dopo.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>6. Memo: in dieci secondi</h2>
+
+<div class="memo">
+  <ul>
+    <li><b>il / lo / l' / la</b> e <b>i / gli / le</b>: lo conosco già.</li>
+    <li><b>un / uno / una / un'</b>: uno qualunque, solo singolare.</li>
+    <li><b>del / dello / dell' / della / dei / degli / delle</b>: una parte, una quantità imprecisa, il plurale di "un".</li>
+    <li>Prima guardo il <b>genere</b>, poi la <b>lettera iniziale</b>, poi decido se la cosa è <b>nota</b> o <b>no</b>.</li>
+  </ul>
+</div>
+
+<h2 class="noprint">7. Verifica veloce</h2>
+
+<div class="card noprint" id="quiz">
+  <p class="sub">Scegli la forma corretta. La risposta appare subito.</p>
+</div>
+
+<footer>
+  Materiale di consultazione per la scuola secondaria di primo grado, rielaborato in versione accessibile.
+  Contenuti di riferimento: scheda "Gli articoli", L'italiano per studiare, Loescher Editore.
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var size = 100;
+  document.getElementById('bigger').addEventListener('click', function(){
+    size = Math.min(size + 12, 160);
+    document.documentElement.style.setProperty('--fs', (size/100) + 'rem');
+  });
+  document.getElementById('smaller').addEventListener('click', function(){
+    size = Math.max(size - 12, 76);
+    document.documentElement.style.setProperty('--fs', (size/100) + 'rem');
+  });
+  document.getElementById('theme').addEventListener('click', function(){
+    var cur = document.documentElement.getAttribute('data-theme');
+    var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var next = cur ? (cur === 'dark' ? 'light' : 'dark') : (dark ? 'light' : 'dark');
+    document.documentElement.setAttribute('data-theme', next);
+  });
+  document.getElementById('print').addEventListener('click', function(){ window.print(); });
+
+  var items = [
+    {q:"____ zio di Marco abita a Udine.", o:["il","lo","l'"], a:1, f:"Zio comincia per z: maschile singolare lo, plurale gli."},
+    {q:"Ho incontrato ____ amica di mia sorella.", o:["un","un'","uno"], a:1, f:"Amica è femminile e comincia per vocale: un' con apostrofo."},
+    {q:"In giardino c'è ____ albero altissimo.", o:["un'","uno","un"], a:2, f:"Albero è maschile: un senza apostrofo."},
+    {q:"____ articoli sono difficili.", o:["li","gli","i"], a:1, f:"Maschile plurale davanti a vocale: gli. La forma li non esiste come articolo."},
+    {q:"Vorrei ____ pane, per favore.", o:["del","dei","della"], a:0, f:"Pane è maschile singolare per consonante: partitivo del, cioè un po' di pane."},
+    {q:"Ho comprato ____ mele al mercato.", o:["del","delle","degli"], a:1, f:"Mele è femminile plurale: delle, cioè alcune mele."},
+    {q:"Ho conosciuto ____ studenti nuovi.", o:["dei","degli","delle"], a:1, f:"Studenti: s+consonante, maschile plurale gli, quindi di+gli = degli."},
+    {q:"____ orologio è fermo.", o:["Il","Lo","L'"], a:2, f:"Orologio comincia per vocale: l' con apostrofo."}
+  ];
+  var box = document.getElementById('quiz');
+  items.forEach(function(it, i){
+    var d = document.createElement('div');
+    d.className = 'quiz-item';
+    var q = document.createElement('div');
+    q.className = 'q';
+    q.textContent = (i+1) + '. ' + it.q;
+    var opts = document.createElement('div');
+    opts.className = 'opts';
+    var fb = document.createElement('div');
+    fb.className = 'fb';
+    it.o.forEach(function(text, j){
+      var b = document.createElement('button');
+      b.className = 'opt';
+      b.type = 'button';
+      b.textContent = text;
+      b.addEventListener('click', function(){
+        if (j === it.a){
+          b.className = 'opt ok';
+          fb.textContent = 'Giusto. ' + it.f;
+        } else {
+          b.className = 'opt no';
+          fb.textContent = 'Non è questa. ' + it.f;
+        }
+      });
+      opts.appendChild(b);
+    });
+    d.appendChild(q); d.appendChild(opts); d.appendChild(fb);
+    box.appendChild(d);
+  });
+})();
+</script>
+</body>
+</html>
