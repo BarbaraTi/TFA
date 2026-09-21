@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Animali: vertebrati e invertebrati</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF6EF;
+    --ink: #2B2B2B;
+    --vert: #C9722B;
+    --vert-light: #FBE7D2;
+    --invert: #1F6F78;
+    --invert-light: #DCEFEF;
+    --accent: #4C8C4A;
+    --card-bg: #FFFFFF;
+    --border: #D8CFC0;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Atkinson Hyperlegible', Arial, Helvetica, sans-serif;
+  }
+  body { padding: 0 0 40px 0; }
+
+  header {
+    padding: 26px 20px 16px;
+    text-align: center;
+    border-bottom: 3px solid var(--border);
+  }
+  header h1 {
+    margin: 0 0 6px;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+  }
+  header p { margin: 0; font-size: 1.05rem; color: #555; }
+
+  /* --- Tabs, CSS-only (no JavaScript needed) --- */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 18px 12px 0;
+  }
+  .tabs input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+  .tabs label {
+    font-family: inherit;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 12px 22px;
+    border-radius: 999px;
+    border: 3px solid var(--border);
+    background: var(--card-bg);
+    color: var(--ink);
+    cursor: pointer;
+    display: inline-block;
+  }
+  #tab-vert:checked ~ .tabs label[for="tab-vert"] { background: var(--vert); border-color: var(--vert); color: #fff; }
+  #tab-invert:checked ~ .tabs label[for="tab-invert"] { background: var(--invert); border-color: var(--invert); color: #fff; }
+  #tab-resp:checked ~ .tabs label[for="tab-resp"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  main { max-width: 1000px; margin: 0 auto; padding: 22px 16px; }
+  .panel { display: none; }
+  #tab-vert:checked ~ main #panel-vert,
+  #tab-invert:checked ~ main #panel-invert,
+  #tab-resp:checked ~ main #panel-resp { display: block; }
+
+  .intro {
+    border: 3px solid var(--border);
+    background: var(--card-bg);
+    border-radius: 18px;
+    padding: 18px 22px;
+    margin-bottom: 22px;
+    font-size: 1.08rem;
+    line-height: 1.5;
+  }
+  .intro strong { font-size: 1.1rem; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  /* --- Cards: native <details>/<summary>, click anywhere on the bar to open/close --- */
+  .card {
+    border-radius: 18px;
+    border: 3px solid var(--border);
+    background: var(--card-bg);
+    overflow: hidden;
+  }
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .card-head::-webkit-details-marker { display: none; }
+  .card-head::marker { content: ""; }
+  #panel-vert .card-head { background: var(--vert); }
+  #panel-invert .card-head { background: var(--invert); }
+  .card-head .icon { font-size: 1.6rem; }
+  .card-head .name { flex: 1; }
+  .card-head .arrow {
+    font-size: 1rem;
+    transition: transform .2s ease;
+    flex-shrink: 0;
+  }
+  .card[open] .card-head .arrow { transform: rotate(180deg); }
+  .card-head .tap-hint {
+    font-size: .78rem;
+    font-weight: 400;
+    opacity: .85;
+    flex-shrink: 0;
+  }
+  .card[open] .card-head .tap-hint { display: none; }
+
+  .card-body { padding: 14px 20px 16px; }
+  .card-body ul {
+    margin: 0;
+    padding-left: 22px;
+    font-size: 1.02rem;
+    line-height: 1.55;
+  }
+  .card-body li { margin-bottom: 4px; }
+  .examples {
+    font-size: .97rem;
+    color: #444;
+    margin: 8px 0 0;
+    font-style: italic;
+  }
+  .sub-groups {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px,1fr));
+    gap: 10px;
+  }
+  .sub-card {
+    background: var(--invert-light);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: .95rem;
+  }
+  .sub-card strong { display: block; margin-bottom: 3px; font-size: 1rem; }
+
+  .legend {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    font-size: .95rem;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+
+  .resp-repro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 700px) {
+    .resp-repro { grid-template-columns: 1fr; }
+  }
+  .col-box {
+    border: 3px solid var(--border);
+    border-radius: 18px;
+    background: var(--card-bg);
+    padding: 18px;
+  }
+  .col-box h2 { margin-top: 0; font-size: 1.25rem; }
+  .mini-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .mini-card {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 14px;
+    padding: 12px;
+    text-align: center;
+  }
+  .mini-card .name { font-weight: 700; font-size: 1.05rem; }
+  .mini-card .ex { font-size: .9rem; opacity: .95; }
+
+  .mode-row { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+  .mode-card {
+    flex: 1 1 140px;
+    background: var(--vert-light);
+    border-radius: 14px;
+    padding: 12px;
+  }
+  .mode-card strong { display: block; margin-bottom: 4px; }
+
+  .triple-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .triple-card {
+    flex: 1 1 100px;
+    background: var(--invert-light);
+    border-radius: 14px;
+    padding: 10px;
+    text-align: center;
+  }
+  .triple-card strong { display: block; font-size: .98rem; }
+  .triple-card .ex { font-size: .85rem; color: #444; }
+
+  footer {
+    text-align: center;
+    font-size: .85rem;
+    color: #777;
+    padding: 20px;
+  }
+
+  /* Print: show everything, one after another, no tabs */
+  @media print {
+    .tabs, footer { display: none; }
+    .panel { display: block !important; margin-bottom: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<input type="radio" name="tabs" id="tab-vert" checked>
+<input type="radio" name="tabs" id="tab-invert">
+<input type="radio" name="tabs" id="tab-resp">
+
+<header>
+  <h1>Gli animali: vertebrati e invertebrati</h1>
+  <p>Tocca il titolo di ogni riquadro colorato per aprirlo e leggere le caratteristiche</p>
+</header>
+
+<div class="tabs">
+  <label for="tab-vert">🐾 Vertebrati</label>
+  <label for="tab-invert">🐌 Invertebrati</label>
+  <label for="tab-resp">🫁 Respirazione e riproduzione</label>
+</div>
+
+<main>
+
+  <!-- VERTEBRATI -->
+  <section class="panel" id="panel-vert">
+    <div class="intro">
+      <strong>VERTEBRATI</strong> &mdash; hanno scheletro interno e colonna vertebrale. Sono divisi in 5 classi.
+      <div class="legend">
+        <span><span class="dot" style="background:#C9722B"></span> eterotermi: la temperatura del corpo cambia con l'ambiente</span>
+        <span><span class="dot" style="background:#8A4A15"></span> omeotermi: mantengono sempre la stessa temperatura</span>
+      </div>
+    </div>
+    <div class="grid">
+
+      <details class="card">
+        <summary class="card-head"><span class="icon">🐟</span><span class="name">Pesci</span><span class="tap-hint">tocca per aprire</span><span class="arrow">&#9662;</span></summary>
+        <div class="card-body">
+          <ul>
+            <li>Vivono in acqua dolce o salata</li>
+            <li>Corpo coperto di scaglie, si muovono con le pinne</li>
+            <li>Respirano con le branchie</li>
+            <li>Vescica natatoria: si riempie o si svuota d'aria per salire e scendere</li>
+            <li>Eterotermi</li>
+          </ul>
+          <p class="examples">Ovipari</p>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary class="card-head"><span class="icon">🐸</span><span class="name">Anfibi</span><span class="tap-hint">tocca per aprire</span><span class="arrow">&#9662;</span></summary>
+        <div class="card-body">
+          <ul>
+            <li>Rane, rospi, salamandre, tritoni</li>
+            <li>Da girino ad adulto: metamorfosi</li>
+            <li>Girini: respirano con le branchie</li>
+            <li>Adulti: respirano con i polmoni e con la pelle</li>
+            <li>Depongono uova gelatinose in acqua</li>
+            <li>Eterotermi</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary class="card-head"><span class="icon">🦎</span><span class="name">Rettili</span><span class="tap-hint">tocca per aprire</span><span class="arrow">&#9662;</span></summary>
+        <div class="card-body">
+          <ul>
+            <li>Lucertole, serpenti, tartarughe, coccodrilli, alligatori</li>
+            <li>Corpo coperto di squame dure e impermeabili</li>
+            <li>Respirano con i polmoni</li>
+            <li>Depongono uova con guscio</li>
+            <li>Eterotermi</li>
+          </ul>
+          <p class="examples">Quasi tutti ovipari</p>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary class="card-head"><span class="icon">🐦</span><span class="name">Uccelli</span><span class="tap-hint">tocca per aprire</span><span class="arrow">&#9662;</span></summary>
+        <div class="card-body">
+          <ul>
+            <li>Hanno le ali (non tutti sanno volare)</li>
+            <li>Corpo coperto di piume (proteggono dal freddo) e penne (per volare)</li>
+            <li>Ossa cave, quindi leggere</li>
+            <li>Respirano con i polmoni</li>
+            <li>Depongono uova con guscio</li>
+            <li>Omeotermi</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary class="card-head"><span class="icon">🐑</span><span class="name">Mammiferi</span><span class="tap-hint">tocca per aprire</span><span class="arrow">&#9662;</span></summary>
+        <div class="card-body">
+          <ul>
+            <li>Vivono in ambienti diversi: terra, acqua, aria</li>
+            <li>Corpo coperto di peli, mantengono costante la temperatura</li>
+            <li>Respirano con i polmoni</li>
+            <li>Le femmine producono latte per i piccoli</li>
+            <li>Omeotermi</li>
+          </ul>
+          <p class="examples">La maggior parte è vivipara</p>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- INVERTEBRATI -->
+  <section class="panel" id="panel-invert">
+    <div class="intro">
+      <strong>INVERTEBRATI</strong> &mdash; non hanno scheletro interno. Possono avere uno scheletro esterno (aragosta, ragno), un guscio (chiocciole), un piccolo osso interno (polpi, calamari) oppure nessuna protezione (meduse). Sono divisi in 8 gruppi.
+    </div>
+    <div class="grid">
+
+      <details class="card">
+        <summary class="card-head"><span class="icon">🧽</span><span class="name">Poriferi</span><span class="tap-hint">tocca per aprire</span><span class="arrow">&#9662;</span></summary>
+        <div class="card-body">
+          <ul>
+            <li>Le spugne. Sono gli invertebrati più semplici</li>
+            <li>Vivono in acqua, ancorati alle rocce</li>
+            <li>Corpo pieno di piccoli pori: filtrano l'acqua per nutrirsi</li>
+            <li>Riproduzione asessuata o sessuata</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary class="card-head"><span class="icon">🎐</span><span class="name">Celenterati</span><span class="tap-hint">tocca per aprire</span><span class="arrow">&#9662;</span></summary>
+        <div class="card-body">
+          <ul>
+            <li>Meduse, anemoni di mare, polipi dei coralli</li>
+            <li>Vivono in ambienti acquatici (mare o acqua dolce)</li>
+            <li>Hanno cellule urticanti per catturare le prede</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary class="card-head"><span class="icon">🎗️</span><span class="name">Platelminti</span><span class="tap-hint">tocca per aprire</span><span class="arrow">&#9662;</span></summary>
+        <div class="card-body">
+          <ul>
+            <li>Vermi piatti</li>
+            <li>Vivono in acqua o nel terreno</li>
+            <li>Es: la planaria; la tenia è un parassita</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary class="card-head"><span class="icon">🧵</span><span class="name">Nematodi</span><span class="tap-hint">tocca per aprire</span><span class="arrow">&#9662;</span></summary>
+        <div class="card-body">
+          <ul>
+            <li>Vermi cilindrici</li>
+            <li>Vivono in acqua o nel terreno</li>
+            <li>Alcuni sono parassiti, come gli ossiuri</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary class="card-head"><span class="icon">🪱</span><span class="name">Anellidi</span><span class="tap-hint">tocca per aprire</span><span class="arrow">&#9662;</span></summary>
+        <div class="card-body">
+          <ul>
+            <li>Vermi segmentati, il corpo è formato da tanti anelli</li>
+            <li>Lombrichi e sanguisughe</li>
+            <li>Si muovono strisciando o nuotando, vivono in tutti gli ambienti</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary class="card-head"><span class="icon">🐌</span><span class="name">Molluschi</span><span class="tap-hint">tocca per aprire</span><span class="arrow">&#9662;</span></summary>
+        <div class="card-body">
+          <ul>
+            <li>Corpo molle, spesso protetto da una conchiglia</li>
+            <li>Si dividono in 3 sottogruppi:</li>
+          </ul>
+          <div class="sub-groups">
+            <div class="sub-card"><strong>Gasteropodi</strong>Piede muscoloso per muoversi, con o senza conchiglia. Es: chiocciola, lumaca di mare</div>
+            <div class="sub-card"><strong>Bivalvi</strong>Doppia conchiglia (due valve), filtratori. Es: cozza, vongola, ostrica</div>
+            <div class="sub-card"><strong>Cefalopodi</strong>Tentacoli con ventose, conchiglia interna o assente. Es: polpo, seppia, calamaro</div>
+          </div>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary class="card-head"><span class="icon">🕷️</span><span class="name">Artropodi</span><span class="tap-hint">tocca per aprire</span><span class="arrow">&#9662;</span></summary>
+        <div class="card-body">
+          <ul>
+            <li>Il nome significa "piedi articolati"</li>
+            <li>Scheletro esterno (esoscheletro), il gruppo più numeroso della Terra</li>
+            <li>Si dividono in 4 sottogruppi:</li>
+          </ul>
+          <div class="sub-groups">
+            <div class="sub-card"><strong>Crostacei</strong>5 paia di zampe, corazza rigida. Es: gambero, aragosta, granchio</div>
+            <div class="sub-card"><strong>Aracnidi</strong>4 paia di zampe, corpo diviso in capo e addome. Es: ragni, scorpioni</div>
+            <div class="sub-card"><strong>Insetti</strong>3 paia di zampe, corpo diviso in capo, torace, addome. Es: api, farfalle</div>
+            <div class="sub-card"><strong>Miriapodi</strong>Tantissime zampe, corpo a molti segmenti. Es: millepiedi, centopiedi</div>
+          </div>
+        </div>
+      </details>
+
+      <details class="card">
+        <summary class="card-head"><span class="icon">⭐</span><span class="name">Echinodermi</span><span class="tap-hint">tocca per aprire</span><span class="arrow">&#9662;</span></summary>
+        <div class="card-body">
+          <ul>
+            <li>Ricci di mare e stelle marine</li>
+            <li>Animali marini, corpo ricoperto di aculei</li>
+            <li>Si muovono grazie al sistema acquifero</li>
+            <li>Possono rigenerare le parti del corpo che perdono</li>
+          </ul>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- RESPIRAZIONE / RIPRODUZIONE -->
+  <section class="panel" id="panel-resp">
+    <div class="resp-repro">
+      <div class="col-box">
+        <h2>🫁 Gli animali respirano attraverso...</h2>
+        <div class="mini-grid">
+          <div class="mini-card"><div class="name">Pelle</div><div class="ex">Es: il verme</div></div>
+          <div class="mini-card"><div class="name">Branchie</div><div class="ex">Es: il pesce</div></div>
+          <div class="mini-card"><div class="name">Trachee</div><div class="ex">Es: la farfalla</div></div>
+          <div class="mini-card"><div class="name">Polmoni</div><div class="ex">Es: il coniglio</div></div>
+        </div>
+      </div>
+      <div class="col-box">
+        <h2>🥚 Gli animali si riproducono...</h2>
+        <div class="mode-row">
+          <div class="mode-card"><strong>Asessuata</strong>Un solo animale</div>
+          <div class="mode-card"><strong>Sessuata</strong>Cellula maschile + cellula femminile = embrione</div>
+        </div>
+        <p style="margin:14px 0 0;font-weight:700;">In base a come si sviluppa l'embrione:</p>
+        <div class="triple-row">
+          <div class="triple-card"><strong>Vivipari</strong><div class="ex">Es: il cane</div></div>
+          <div class="triple-card"><strong>Ovipari</strong><div class="ex">Es: la farfalla</div></div>
+          <div class="triple-card"><strong>Ovovivipari</strong><div class="ex">Es: la vipera</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Schema realizzato a partire dal libro di testo &middot; Scienze &ndash; Gli animali</footer>
+
+</body>
+</html>
