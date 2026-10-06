@@ -1,0 +1,700 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Mappa del verbo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Lexend:wght@300..700&display=swap">
+<style>
+/* Layout: barra di navigazione fissa con una scheda per paragrafo; ogni paragrafo ha schema, esempi colorati per ruolo e una verifica. */
+:root{
+  --bg:#F3F6FA; --surface:#FFFFFF; --ink:#13213B; --muted:#53617A; --line:#D3DBE8; --soft:#E8EDF5;
+  --accent:#D9480F; --on-accent:#FFFFFF; --focus:#1B5FCF;
+  --sog:#1B5FCF; --sog-bg:#DDE9FB;
+  --ver:#B83C07; --ver-bg:#FDE6D6;
+  --ogg:#17794A; --ogg-bg:#D9F1E3;
+  --ind:#A8236F; --ind-bg:#F8DDEB;
+  --nom:#6A35BD; --nom-bg:#E8DEF8;
+  --ok:#17794A; --ok-bg:#D9F1E3; --bad:#B42318; --bad-bg:#FCE4E1;
+  --display:"Bricolage Grotesque","Lexend",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1626; --surface:#162238; --ink:#E7ECF5; --muted:#9FADC6; --line:#2A3A57; --soft:#1D2C47;
+    --accent:#FF8A4C; --on-accent:#1B0E06; --focus:#8DB6FF;
+    --sog:#8DB6FF; --sog-bg:#1C3358; --ver:#FFA168; --ver-bg:#4A2A16;
+    --ogg:#6FD3A0; --ogg-bg:#173A2B; --ind:#F28BC0; --ind-bg:#4A1D38;
+    --nom:#BE9CF5; --nom-bg:#35244F;
+    --ok:#6FD3A0; --ok-bg:#173A2B; --bad:#FF8F85; --bad-bg:#4A1E1A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1626; --surface:#162238; --ink:#E7ECF5; --muted:#9FADC6; --line:#2A3A57; --soft:#1D2C47;
+  --accent:#FF8A4C; --on-accent:#1B0E06; --focus:#8DB6FF;
+  --sog:#8DB6FF; --sog-bg:#1C3358; --ver:#FFA168; --ver-bg:#4A2A16;
+  --ogg:#6FD3A0; --ogg-bg:#173A2B; --ind:#F28BC0; --ind-bg:#4A1D38;
+  --nom:#BE9CF5; --nom-bg:#35244F;
+  --ok:#6FD3A0; --ok-bg:#173A2B; --bad:#FF8F85; --bad-bg:#4A1E1A;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16.5px;line-height:1.65;overflow-wrap:break-word}
+:root[data-size="l"] body{font-size:19px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.15;margin:0;font-weight:800}
+h2{font-size:clamp(1.55em,5vw,2.2em)}
+h3{font-size:1.25em}
+p{max-width:66ch;margin:.5em 0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.wrap{max-width:64rem;margin-inline:auto;padding-inline:16px}
+
+/* barra */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;flex-direction:column;gap:.4em;padding-block:.6em .45em}
+.brandrow{display:flex;align-items:center;justify-content:space-between;gap:1em}
+.brand{font-family:var(--display);font-weight:800;font-size:1.15em}
+.brand small{font-family:"Lexend",sans-serif;font-weight:400;color:var(--muted);font-size:.7em;margin-left:.6em}
+.tabs{display:flex;gap:.35em;overflow-x:auto;padding-bottom:.35em;scrollbar-width:thin}
+.tab{flex:0 0 auto;font-size:.85em;padding:.4em .8em;border:1px solid var(--line);background:var(--surface);border-radius:.5em;cursor:pointer;white-space:nowrap}
+.tab:hover{background:var(--soft)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.size{font-size:.8em;padding:.3em .7em;border:1px solid var(--line);background:var(--surface);border-radius:.5em;cursor:pointer}
+.size[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+@media (max-width:540px){.brand small{display:none}}
+
+/* viste */
+.view{padding-block:1.6em 3em}
+.sechead{display:flex;gap:.8em;align-items:flex-start;margin-bottom:1.2em}
+.num{font-family:var(--display);font-weight:800;font-size:3em;line-height:.9;color:var(--accent)}
+.lead{color:var(--muted);margin:.4em 0 0;max-width:60ch}
+.block{margin-top:2em}
+.block>h3{margin-bottom:.6em}
+.def{background:var(--soft);border-radius:.6em;padding:.9em 1.1em;max-width:70ch;margin:.6em 0}
+.k{color:var(--accent);font-weight:700}
+.v{color:var(--ver);font-weight:700}
+.muted{color:var(--muted)}
+.note{border:1.5px dashed var(--line);border-radius:.6em;padding:.8em 1em;max-width:70ch;margin-top:1em}
+
+/* ruoli grammaticali */
+.r{padding:.04em .32em;border-radius:.3em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.r.sog{color:var(--sog);background:var(--sog-bg)}
+.r.ver{color:var(--ver);background:var(--ver-bg)}
+.r.ogg{color:var(--ogg);background:var(--ogg-bg)}
+.r.ind{color:var(--ind);background:var(--ind-bg)}
+.r.nom{color:var(--nom);background:var(--nom-bg)}
+.legend{display:flex;flex-wrap:wrap;gap:.4em .6em;margin:.6em 0;font-size:.88em}
+.parse{display:flex;flex-wrap:wrap;gap:.7em .6em;align-items:flex-start;margin:.8em 0}
+.pc{display:flex;flex-direction:column;align-items:flex-start;gap:.25em;min-width:0;max-width:100%}
+.pc .w{font-size:1.05em}
+.pc .lab{font-size:.74em;line-height:1.25;color:var(--muted);max-width:13em}
+.pc.sog .lab{color:var(--sog)}.pc.ver .lab{color:var(--ver)}.pc.ogg .lab{color:var(--ogg)}.pc.ind .lab{color:var(--ind)}.pc.nom .lab{color:var(--nom)}
+
+/* schemi ad albero */
+.duo,.trio{display:grid;gap:1em;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr))}
+.flow{display:flex;flex-direction:column;gap:.4em;min-width:0}
+.tag{align-self:center;background:var(--accent);color:var(--on-accent);font-family:var(--display);font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:.82em;padding:.35em .9em;border-radius:.4em}
+.arrow{text-align:center;color:var(--muted);line-height:1}
+.box{border:1.5px solid var(--line);border-radius:.6em;padding:.7em .9em;text-align:center;background:var(--surface)}
+.box.ex{font-style:italic}
+.box.ex .v{font-style:italic}
+
+/* controlli */
+.btn{font-size:.9em;padding:.45em .9em;border-radius:.5em;border:1.5px solid var(--ink);background:transparent;cursor:pointer}
+.btn:hover{background:var(--soft)}
+.btn[aria-pressed="true"],.btn[aria-expanded="true"]{background:var(--ink);color:var(--bg)}
+.seg{display:flex;flex-wrap:wrap;gap:.4em;margin:.8em 0}
+.rev{margin-top:.6em;padding:.6em .9em;border-radius:.5em;background:var(--soft);max-width:68ch}
+.exrow{display:flex;flex-wrap:wrap;align-items:center;gap:.5em 1em;padding:.7em 0;border-top:1px solid var(--line)}
+.exrow:first-of-type{border-top:0}
+.exrow .s{flex:1 1 14em;font-style:italic;min-width:0}
+.exrow .rev{flex:1 1 100%;margin-top:0}
+
+/* mappa iniziale */
+.root{max-width:34rem;margin:0 auto;text-align:center;background:var(--ink);color:var(--bg);border-radius:.8em;padding:1.1em 1.3em;position:relative}
+.root h2{color:var(--bg)}
+.root p{margin:.4em auto 0}
+.root::after{content:"";position:absolute;left:50%;bottom:-1.6em;width:2px;height:1.6em;background:var(--line)}
+.nodes{margin-top:1.6em;display:grid;gap:.9em;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr))}
+.node{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:.7em;padding:.9em 1em;cursor:pointer;display:flex;flex-direction:column;gap:.35em;min-width:0}
+.node:hover{border-color:var(--ink)}
+.node .n{font-family:var(--display);font-weight:800;color:var(--accent);font-size:1.5em;line-height:1}
+.node .t{font-family:var(--display);font-weight:800;font-size:1.1em;line-height:1.2}
+.node .q{color:var(--muted);font-size:.9em}
+.chips{display:flex;flex-wrap:wrap;gap:.3em;margin-top:.2em}
+.chip{font-size:.78em;background:var(--soft);border-radius:.35em;padding:.15em .55em}
+
+/* lista definizioni */
+.dl{display:grid;gap:.7em;margin:.6em 0}
+.dl .it{display:grid;grid-template-columns:minmax(7.5em,9.5em) 1fr;gap:.2em 1em;align-items:start}
+.dl .nm{font-family:var(--display);font-weight:800;color:var(--accent)}
+.dl .tx{min-width:0}
+.dl .tx i{display:block;margin-top:.15em}
+@media (max-width:460px){.dl .it{grid-template-columns:1fr}}
+
+/* sezione 5 */
+.rd{display:flex;flex-wrap:wrap;align-items:center;gap:.8em 1.2em;margin:.8em 0}
+.rbox{border:1.5px solid var(--ink);border-radius:.6em;padding:.6em 1em;text-align:center;font-family:var(--display);font-weight:800;font-size:1.3em}
+.rbox small{display:block;font-family:"Lexend",sans-serif;font-weight:400;font-size:.55em;color:var(--muted)}
+.dcol{display:flex;flex-direction:column;gap:.35em}
+.dcol .rbox{border-color:var(--accent);color:var(--accent);font-size:1.05em;padding:.3em .9em}
+.word{font-family:var(--display);font-weight:800;font-size:2em;line-height:1.2}
+.word .d{color:var(--accent);border-bottom:3px solid var(--accent)}
+.who{display:flex;flex-wrap:wrap;gap:.4em;margin:.5em 0}
+.tl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5em;text-align:center;margin:.8em 0}
+.tp{border:1.5px solid var(--line);border-radius:.6em;padding:.6em .4em;background:var(--surface)}
+.tp .a{font-size:.74em;color:var(--muted);display:block}
+.tp .wd{font-family:var(--display);font-weight:800;font-size:1.25em;color:var(--accent);display:block}
+.tp .tt{font-weight:600;font-size:.9em}
+
+/* verifica */
+.quiz{border:1.5px solid var(--ink);border-radius:.7em;padding:1em 1.1em;background:var(--surface);margin-top:2em;max-width:44rem}
+.qh{display:flex;justify-content:space-between;gap:1em;font-size:.8em;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.qp{margin:.7em 0 .3em;color:var(--muted);font-size:.92em}
+.qs{font-size:1.3em;font-style:italic;margin:.1em 0 .8em;line-height:1.4}
+.qs b{color:var(--ver);font-style:normal}
+.opts{display:flex;flex-wrap:wrap;gap:.5em}
+.opt{font-size:.95em;padding:.5em 1em;border:1.5px solid var(--ink);border-radius:.5em;background:transparent;cursor:pointer}
+.opt:hover:not(:disabled){background:var(--soft)}
+.opt:disabled{cursor:default}
+.opt.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.opt.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.fb{min-height:1.6em;margin-top:.8em}
+.fb b.ok{color:var(--ok)}.fb b.bad{color:var(--bad)}
+.score{font-family:var(--display);font-weight:800;font-size:1.6em}
+
+/* tabelle */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:.6em;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:40rem;font-size:.92em}
+th{text-align:left;font-size:.78em;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:.7em .9em;border-bottom:1.5px solid var(--line)}
+td{padding:.7em .9em;border-top:1px solid var(--line);vertical-align:top}
+tbody tr:first-child td{border-top:0}
+td:first-child{font-weight:600}
+td.e{font-style:italic}
+.an{display:grid;grid-template-columns:minmax(8em,12em) minmax(0,1fr);gap:.35em 1em;margin-top:.8em;padding:1em;border:1.5px solid var(--line);border-radius:.6em;background:var(--surface)}
+.an dt{color:var(--muted);font-size:.88em}
+.an dd{margin:0;font-weight:500}
+.pager{display:flex;justify-content:space-between;gap:1em;flex-wrap:wrap;margin-top:2.5em;padding-top:1.2em;border-top:1px solid var(--line)}
+.foot{color:var(--muted);font-size:.82em;padding-bottom:2em}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brandrow">
+      <div class="brand">Il verbo<small>Grammatica, scuola secondaria di primo grado</small></div>
+      <button class="size" id="size" aria-pressed="false" title="Ingrandisci il testo">Testo grande</button>
+    </div>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Paragrafi"></nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- MAPPA -->
+<section class="view" id="v-map" hidden>
+  <div class="root">
+    <h2>Il verbo</h2>
+    <p>È la parola variabile al centro di ogni frase. Agli altri elementi della frase si collega, direttamente o indirettamente.</p>
+  </div>
+  <div class="nodes" id="nodes">
+    <button class="node" data-go="s1"><span class="n">1</span><span class="t">Il verbo nella frase</span><span class="q">Che cosa indica?</span><span class="chips"><span class="chip">azione compiuta</span><span class="chip">azione subita</span><span class="chip">stato</span><span class="chip">ciò che accade</span></span></button>
+    <button class="node" data-go="s2"><span class="n">2</span><span class="t">Transitivi e intransitivi</span><span class="q">Ammette un complemento oggetto?</span><span class="chips"><span class="chip">transitivi</span><span class="chip">intransitivi</span></span></button>
+    <button class="node" data-go="s3"><span class="n">3</span><span class="t">Personali e impersonali</span><span class="q">Ha un soggetto?</span><span class="chips"><span class="chip">personali</span><span class="chip">impersonali</span></span></button>
+    <button class="node" data-go="s4"><span class="n">4</span><span class="t">Predicativi e copulativi</span><span class="q">Ha senso proprio o collega?</span><span class="chips"><span class="chip">predicativi</span><span class="chip">copulativi</span></span></button>
+    <button class="node" data-go="s5"><span class="n">5</span><span class="t">Persona, modo, tempo</span><span class="q">Come è fatto?</span><span class="chips"><span class="chip">radice + desinenza</span><span class="chip">persona</span><span class="chip">modo</span><span class="chip">tempo</span></span></button>
+    <button class="node" data-go="s6"><span class="n">6</span><span class="t">Attiva, passiva, riflessiva</span><span class="q">Chi compie l’azione?</span><span class="chips"><span class="chip">attiva</span><span class="chip">passiva</span><span class="chip">riflessiva</span></span></button>
+  </div>
+
+  <div class="block">
+    <h3>Come leggere i colori</h3>
+    <p>In tutta la mappa le parti della frase hanno sempre lo stesso colore.</p>
+    <div class="legend">
+      <span class="r sog">soggetto</span><span class="r ver">verbo</span><span class="r ogg">complemento oggetto</span><span class="r ind">complementi indiretti</span><span class="r nom">parte nominale</span>
+    </div>
+    <div class="parse" data-p='[["Nadia","sog","soggetto"],["ha comprato","ver","verbo"],["un libro","ogg","complemento oggetto"],["di fantascienza nella libreria sotto i portici","ind","complementi indiretti"]]'></div>
+  </div>
+
+  <div class="block">
+    <h3>Come usare la mappa</h3>
+    <p>Scegli un nodo, leggi lo schema, apri gli esempi interattivi e rispondi alla verifica in fondo alla pagina. L’ultima scheda raccoglie tutto in una tabella e analizza una frase completa.</p>
+  </div>
+</section>
+
+<!-- 1 -->
+<section class="view" id="v-s1" hidden>
+  <div class="sechead"><div class="num">1</div><div><h2>Il verbo nella frase</h2><p class="lead">Che cosa dice il verbo del soggetto?</p></div></div>
+  <div class="def">Il <span class="k">verbo</span> è la <b>parola variabile</b> al <span class="k">centro</span> di ogni frase. Dà informazioni sul soggetto e agli altri elementi si collega, direttamente o indirettamente.</div>
+
+  <div class="block">
+    <h3>Che cosa può indicare</h3>
+    <div class="legend"><span class="r sog">soggetto</span><span class="r ver">verbo</span></div>
+    <div class="duo">
+      <div class="box" style="text-align:left"><b>Un’azione che il soggetto compie</b><br><i><span class="r sog">Lo scienziato</span> <span class="r ver">ha scoperto</span> l’origine della malattia.</i></div>
+      <div class="box" style="text-align:left"><b>Un’azione che il soggetto subisce</b><br><i><span class="r sog">La malattia</span> <span class="r ver">è causata</span> da un virus.</i></div>
+      <div class="box" style="text-align:left"><b>L’esistenza o lo stato del soggetto</b><br><i><span class="r sog">Lo scienziato</span> <span class="r ver">è</span> un noto studioso.</i></div>
+      <div class="box" style="text-align:left"><b>Qualcosa che accade al soggetto</b><br><i><span class="r sog">Lo scienziato</span> <span class="r ver">ha ricevuto</span> molti riconoscimenti.</i></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Analisi logica: il verbo e gli altri elementi</h3>
+    <p>Il verbo stabilisce rapporti precisi con gli altri elementi. Premi i tre pulsanti in ordine.</p>
+    <div id="d1"></div>
+  </div>
+
+  <div class="block">
+    <h3>Come si classificano i verbi</h3>
+    <p>In base al significato e ai rapporti con gli altri elementi della frase, i verbi sono:</p>
+    <div class="seg">
+      <button class="btn" data-go="s2">transitivi o intransitivi</button>
+      <button class="btn" data-go="s3">personali o impersonali</button>
+      <button class="btn" data-go="s4">predicativi o copulativi</button>
+    </div>
+  </div>
+  <div class="quiz" data-quiz="q1"></div>
+</section>
+
+<!-- 2 -->
+<section class="view" id="v-s2" hidden>
+  <div class="sechead"><div class="num">2</div><div><h2>Verbi transitivi e intransitivi</h2><p class="lead">Il verbo ammette un complemento oggetto?</p></div></div>
+  <div class="duo">
+    <div class="flow"><div class="tag">Verbi transitivi</div><div class="arrow" aria-hidden="true">↓</div><div class="box">ammettono un <b>complemento oggetto</b></div><div class="arrow" aria-hidden="true">↓</div><div class="box ex">Clara <b class="v">mangia</b> (<span class="k">che cosa?</span>) un biscotto.</div></div>
+    <div class="flow"><div class="tag">Verbi intransitivi</div><div class="arrow" aria-hidden="true">↓</div><div class="box"><b>NON</b> ammettono un <b>complemento oggetto</b></div><div class="arrow" aria-hidden="true">↓</div><div class="box ex">Clara <b class="v">passeggia</b>.</div></div>
+  </div>
+
+  <div class="block">
+    <h3>Il test della domanda</h3>
+    <p>Dopo il verbo, prova a chiedere <span class="k">che cosa?</span> Se c’è una risposta nella frase, il verbo è transitivo.</p>
+    <div>
+      <div class="exrow"><span class="s">Clara mangia un biscotto.</span><button class="btn" data-reveal="r2a" aria-expanded="false">Chiedi: che cosa?</button><div class="rev" id="r2a" hidden>Clara mangia <b>che cosa?</b> <span class="r ogg">Un biscotto</span>. Risposta presente: verbo transitivo.</div></div>
+      <div class="exrow"><span class="s">Clara passeggia.</span><button class="btn" data-reveal="r2b" aria-expanded="false">Chiedi: che cosa?</button><div class="rev" id="r2b" hidden>Clara passeggia <b>che cosa?</b> La domanda non ha risposta. Verbo intransitivo.</div></div>
+      <div class="exrow"><span class="s">Nadia ha comprato un libro.</span><button class="btn" data-reveal="r2c" aria-expanded="false">Chiedi: che cosa?</button><div class="rev" id="r2c" hidden>Nadia ha comprato <b>che cosa?</b> <span class="r ogg">Un libro</span>. Verbo transitivo.</div></div>
+      <div class="exrow"><span class="s">Nadia dorme.</span><button class="btn" data-reveal="r2d" aria-expanded="false">Chiedi: che cosa?</button><div class="rev" id="r2d" hidden>Nadia dorme <b>che cosa?</b> Nessuna risposta: l’azione si conclude con il verbo. Verbo intransitivo.</div></div>
+    </div>
+    <div class="note">Collegamento con la sezione 6: la forma passiva è possibile <b>soltanto con i verbi transitivi</b>.</div>
+  </div>
+  <div class="quiz" data-quiz="q2"></div>
+</section>
+
+<!-- 3 -->
+<section class="view" id="v-s3" hidden>
+  <div class="sechead"><div class="num">3</div><div><h2>Verbi personali e impersonali</h2><p class="lead">Il verbo ha un soggetto?</p></div></div>
+  <div class="duo">
+    <div class="flow"><div class="tag">Verbi personali</div><div class="arrow" aria-hidden="true">↓</div><div class="box">hanno un <b>soggetto</b> (anche se sottinteso)</div><div class="arrow" aria-hidden="true">↓</div><div class="box ex">Chiara <b class="v">passeggia</b>.<br>(Noi) <b class="v">Andiamo</b> al mare.</div></div>
+    <div class="flow"><div class="tag">Verbi impersonali</div><div class="arrow" aria-hidden="true">↓</div><div class="box">non hanno un <b>soggetto</b>; si usano solo alla <b>3ª persona singolare</b></div><div class="arrow" aria-hidden="true">↓</div><div class="box ex"><b class="v">Piove</b>.<br><b class="v">Conviene</b> partire ora.</div></div>
+  </div>
+
+  <div class="block">
+    <h3>Personali</h3>
+    <p>Richiedono il soggetto, che esiste <b>anche se sottinteso</b>. Sono la maggior parte dei verbi: <i>dormo</i>, <i>Marco nuota</i>, <i>loro mangiavano</i>.</p>
+    <div class="exrow"><span class="s">Andiamo al mare.</span><button class="btn" data-reveal="r3a" aria-expanded="false">Cerca il soggetto</button><div class="rev" id="r3a" hidden><span class="r sog">(Noi)</span> <span class="r ver">andiamo</span> al mare. La desinenza indica la 1ª persona plurale: il soggetto c’è, anche se non è scritto.</div></div>
+    <div class="exrow"><span class="s">Dormo.</span><button class="btn" data-reveal="r3b" aria-expanded="false">Cerca il soggetto</button><div class="rev" id="r3b" hidden><span class="r sog">(Io)</span> <span class="r ver">dormo</span>. Soggetto sottinteso, 1ª persona singolare.</div></div>
+  </div>
+
+  <div class="block">
+    <h3>Impersonali</h3>
+    <p>Indicano un’azione o una condizione <b>non attribuita a un soggetto determinato</b>. Si usano sempre alla 3ª persona singolare.</p>
+    <div class="exrow"><span class="s">Piove.</span><button class="btn" data-reveal="r3c" aria-expanded="false">Cerca il soggetto</button><div class="rev" id="r3c" hidden>Chi o che cosa piove? Non c’è risposta. Nessun soggetto, 3ª persona singolare.</div></div>
+    <p>I tipici verbi impersonali sono i <span class="k">verbi atmosferici</span>:</p>
+    <div class="chips"><span class="chip">piove</span><span class="chip">lampeggia</span><span class="chip">tuona</span><span class="chip">grandina</span><span class="chip">nevica</span><span class="chip">gela</span><span class="chip">albeggia</span></div>
+    <div class="note">Eccezione: un verbo atmosferico può essere costruito personalmente, cioè avere il soggetto (<i>piove acqua gelida</i>).</div>
+  </div>
+  <div class="quiz" data-quiz="q3"></div>
+</section>
+
+<!-- 4 -->
+<section class="view" id="v-s4" hidden>
+  <div class="sechead"><div class="num">4</div><div><h2>Verbi predicativi e copulativi</h2><p class="lead">Il verbo ha senso proprio o collega il soggetto a una parte nominale?</p></div></div>
+  <div class="duo">
+    <div class="flow"><div class="tag">Verbi predicativi</div><div class="arrow" aria-hidden="true">↓</div><div class="box">sono dotati di senso proprio e svolgono funzione di <b>predicato verbale</b></div><div class="arrow" aria-hidden="true">↓</div><div class="box ex">Chiara <b class="v">stima</b> Gianluca.</div></div>
+    <div class="flow"><div class="tag">Verbi copulativi</div><div class="arrow" aria-hidden="true">↓</div><div class="box">collegano il soggetto a una <b>parte nominale</b> e svolgono funzione di <b>copula</b></div><div class="arrow" aria-hidden="true">↓</div><div class="box ex">Chiara <b class="v">è</b> una ragazza studiosa.</div></div>
+  </div>
+
+  <div class="block">
+    <h3>Predicativi: senso proprio e compiuto</h3>
+    <p>La maggioranza dei verbi appartiene a questa categoria. Possono indicare:</p>
+    <div class="dl">
+      <div class="it"><span class="nm">azione</span><span class="tx">compiuta dal soggetto<i>amare, correre, leggere</i></span></div>
+      <div class="it"><span class="nm">fenomeno</span><span class="tx">un fatto che accade al soggetto<i>scoppiare, cadere, crescere</i></span></div>
+      <div class="it"><span class="nm">stato</span><span class="tx">una condizione in cui si trova il soggetto<i>stare, esistere, splendere</i></span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Copulativi: la funzione di copula</h3>
+    <p>In latino <i>copula</i> significa “legame”. Il verbo collega il soggetto con una <b>parte nominale</b>, cioè un nome o un aggettivo concordato con il soggetto, che ne completa il significato.</p>
+    <div class="def"><span class="k">Predicato nominale</span>: il verbo copulativo per eccellenza è <i>essere</i>. Insieme alla parte nominale (o nome del predicato) forma il predicato nominale. Altri verbi copulativi: <i>sembrare</i>, <i>diventare</i>.</div>
+    <p><b>Confronta l’analisi delle due frasi.</b></p>
+    <div class="parse" data-p='[["Chiara","sog","soggetto"],["stima","ver","predicato verbale"],["Gianluca","ogg","complemento oggetto"]]'></div>
+    <div class="parse" data-p='[["Il mio frigorifero","sog","soggetto"],["è","ver","copula"],["vecchio","nom","parte nominale (nome del predicato)"]]'></div>
+    <p class="muted">È + vecchio = predicato nominale.</p>
+  </div>
+  <div class="quiz" data-quiz="q4"></div>
+</section>
+
+<!-- 5 -->
+<section class="view" id="v-s5" hidden>
+  <div class="sechead"><div class="num">5</div><div><h2>Persona, modo, tempo</h2><p class="lead">Il verbo è la parola più variabile di tutte: in teoria conta un centinaio di forme.</p></div></div>
+  <div class="seg" id="seg5" role="tablist" aria-label="Parti del paragrafo 5">
+    <button class="btn" data-pane="p5a" aria-pressed="true">Radice e desinenza</button>
+    <button class="btn" data-pane="p5b" aria-pressed="false">La persona</button>
+    <button class="btn" data-pane="p5c" aria-pressed="false">Il modo</button>
+    <button class="btn" data-pane="p5d" aria-pressed="false">Il tempo</button>
+  </div>
+
+  <div class="pane" id="p5a">
+    <p>Questo dipende dalla struttura del verbo, formato da <span class="k">radice</span> e <span class="k">desinenza</span>.</p>
+    <div class="rd">
+      <div class="rbox">am-<small>radice (invariabile)</small></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="dcol"><div class="rbox">-ate</div><div class="rbox">-eranno</div><div class="rbox">-avamo</div></div>
+      <span class="muted">desinenza (variabile)</span>
+    </div>
+    <div class="dl">
+      <div class="it"><span class="nm">Radice</span><span class="tx">Esprime il <b>significato di base</b> e non cambia: <i>am-</i> in <i>amare</i>, <i>tem-</i> in <i>temere</i>, <i>sent-</i> in <i>sentire</i>. Si ritrova in altre parole della stessa famiglia (<i>am-ore</i>, <i>am-ico</i>). Si ricava eliminando <i>-are</i>, <i>-ere</i>, <i>-ire</i> dall’infinito presente.</span></div>
+      <div class="it"><span class="nm">Desinenza</span><span class="tx">Varia per indicare <b>persona</b>, <b>modo</b> e <b>tempo</b>. L’insieme delle sue variazioni costituisce la <b>coniugazione</b>.</span></div>
+    </div>
+    <p><b>Esempio: parl-avamo</b></p>
+    <div class="parse" data-p='[["parl-","ogg","radice: significato di base"],["-avamo","ver","desinenza"]]'></div>
+    <div class="dl">
+      <div class="it"><span class="nm">-v-</span><span class="tx">tempo <b>imperfetto</b>, modo <b>indicativo</b>. La consonante è caratteristica dell’imperfetto indicativo in tutte e tre le coniugazioni.</span></div>
+      <div class="it"><span class="nm">-mo</span><span class="tx">persona: <b>1ª plurale</b>.</span></div>
+    </div>
+  </div>
+
+  <div class="pane" id="p5b" hidden>
+    <div class="def">Si chiama <span class="k">persona</span> chi <b>compie o subisce l’azione</b> o si trova nella condizione indicata dal verbo.</div>
+    <p>Le persone sono sei: tre singolari (<i>io, tu, lui/lei</i>) e tre plurali (<i>noi, voi, loro</i>). Scegli una persona e osserva la desinenza di <i>saltare</i>.</p>
+    <div class="who" id="who"></div>
+    <div class="word" id="wordout" aria-live="polite"></div>
+    <p class="muted" id="wordlab"></p>
+  </div>
+
+  <div class="pane" id="p5c" hidden>
+    <div class="def">Il <span class="k">modo</span> indica, attraverso la variazione della desinenza, <b>come viene presentata l’informazione</b> contenuta nel verbo.</div>
+    <div class="duo" style="margin-top:1em">
+      <div class="flow"><div class="tag">Modi finiti</div><div class="arrow" aria-hidden="true">↓</div><div class="box">indicativo · congiuntivo<br>condizionale · imperativo</div><div class="arrow" aria-hidden="true">↓</div><div class="box">hanno <b>desinenze personali</b>: si risale alla persona e il verbo concorda con il soggetto</div></div>
+      <div class="flow"><div class="tag">Modi indefiniti</div><div class="arrow" aria-hidden="true">↓</div><div class="box">infinito · gerundio · participio</div><div class="arrow" aria-hidden="true">↓</div><div class="box"><b>privi</b> di desinenze personali (<i>amare, amando</i>)</div></div>
+    </div>
+    <h3 style="margin-top:1.4em">I quattro modi finiti</h3>
+    <div class="dl">
+      <div class="it"><span class="nm">Indicativo</span><span class="tx">Presenta un fatto come <b>reale e certo</b>.<i><span class="v">Abito</span> in una cascina in campagna. L’acqua <span class="v">bolle</span> a 100 gradi.</i></span></div>
+      <div class="it"><span class="nm">Congiuntivo</span><span class="tx">Di solito è in frasi che dipendono da altre frasi. Presenta un fatto come <b>ipotizzato, incerto, temuto, augurabile</b>.<i>Spero che <span class="v">abbiate</span> ragione.</i></span></div>
+      <div class="it"><span class="nm">Condizionale</span><span class="tx">Esprime la <b>possibilità che un fatto avvenga</b>, ma soltanto a condizione che se ne realizzi un altro.<i>Se il treno fosse in ritardo, <span class="v">farei</span> ancora in tempo a prenderlo.</i></span></div>
+      <div class="it"><span class="nm">Imperativo</span><span class="tx">Esprime un <b>ordine</b>, una <b>preghiera</b>, un <b>consiglio</b>.<i><span class="v">Spostatevi</span> di lì! <span class="v">Abbi</span> pazienza!</i></span></div>
+    </div>
+    <h3 style="margin-top:1.4em">I tre modi indefiniti</h3>
+    <p>Infinito, participio e gerundio possono avere funzione di <b>nome</b> o di <b>aggettivo</b>: per questo si chiamano anche <i>forme nominali del verbo</i> o <i>nomi verbali</i>.</p>
+    <div class="dl">
+      <div class="it"><span class="nm">Gerundio</span><span class="tx">Può assumere il valore di un modo finito.<i>Si è slogato una caviglia <span class="v">giocando</span> a pallone. (= mentre giocava: fatto realmente avvenuto)</i><i><span class="v">Giocando</span> meno a pallone, avresti più tempo libero. (= se giocassi meno: fatto non avvenuto)</i></span></div>
+      <div class="it"><span class="nm">Infinito</span><span class="tx">Con funzione di nome.<i><span class="v">Studiare</span> costa fatica. (= lo studio)</i></span></div>
+    </div>
+    <div class="quiz" data-quiz="q5a"></div>
+  </div>
+
+  <div class="pane" id="p5d" hidden>
+    <div class="def">Il <span class="k">tempo</span> indica <b>il momento in cui si verifica l’azione</b> ed è indicato dalla desinenza.</div>
+    <h3 style="margin-top:1em">I tre tempi fondamentali</h3>
+    <div class="tl">
+      <div class="tp"><span class="a">anteriorità</span><span class="wd">pioveva</span><span class="tt">passato</span></div>
+      <div class="tp"><span class="a">contemporaneità</span><span class="wd">piove</span><span class="tt">presente</span></div>
+      <div class="tp"><span class="a">posteriorità</span><span class="wd">pioverà</span><span class="tt">futuro</span></div>
+    </div>
+    <div class="dl">
+      <div class="it"><span class="nm">Presente</span><span class="tx">Ciò che il verbo dice è <b>contemporaneo</b> al momento in cui si parla. Tutti i modi hanno un tempo presente. Il participio presente è raro, ma utilizzabile per alcuni verbi.<i>Il camino <span class="v">fumante</span> indicava la presenza di persone nella casetta.</i></span></div>
+      <div class="it"><span class="nm">Passato</span><span class="tx">Indica l’<b>anteriorità</b>. Esiste in tutti i modi eccetto l’imperativo. L’indicativo ha cinque tempi al passato, il congiuntivo tre, gli altri modi uno solo.</span></div>
+      <div class="it"><span class="nm">Futuro</span><span class="tx">Indica la <b>posteriorità</b>. Esiste solo all’indicativo, con due tempi: <b>futuro semplice</b> e <b>futuro anteriore</b>. Il futuro anteriore segnala che un’azione futura precede un’altra azione futura.<i>Quando <span class="v">avrò letto</span> il libro, te lo presterò. (= prima leggerò il libro, poi te lo presterò)</i></span></div>
+    </div>
+    <h3 style="margin-top:1.4em">Per la forma: semplici e composti</h3>
+    <div class="duo">
+      <div class="flow"><div class="tag">Tempi semplici</div><div class="arrow" aria-hidden="true">↓</div><div class="box">sono formati da <b>una sola parola</b></div><div class="arrow" aria-hidden="true">↓</div><div class="box ex">vedo, faremo, sentissero, venendo, pensare</div></div>
+      <div class="flow"><div class="tag">Tempi composti</div><div class="arrow" aria-hidden="true">↓</div><div class="box">ausiliare <b>essere</b> o <b>avere</b> + <b>participio passato</b></div><div class="arrow" aria-hidden="true">↓</div><div class="box ex">ha visto, avremo fatto, avessero sentito, essendo venuto, avere pensato, avevo pensato</div></div>
+    </div>
+    <div class="quiz" data-quiz="q5b"></div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="view" id="v-s6" hidden>
+  <div class="sechead"><div class="num">6</div><div><h2>La forma del verbo: attiva, passiva, riflessiva</h2><p class="lead">La forma esprime il rapporto che il verbo ha con il soggetto e con l’oggetto.</p></div></div>
+  <div class="trio">
+    <div class="flow"><div class="tag">Attiva</div><div class="arrow" aria-hidden="true">↓</div><div class="box">il soggetto <b>compie</b> l’azione</div><div class="arrow" aria-hidden="true">↓</div><div class="box ex">Camilla <b class="v">pettina</b> la sorella.</div></div>
+    <div class="flow"><div class="tag">Passiva</div><div class="arrow" aria-hidden="true">↓</div><div class="box">il soggetto <b>subisce</b> l’azione</div><div class="arrow" aria-hidden="true">↓</div><div class="box ex">La sorella <b class="v">è pettinata</b> da Camilla.</div></div>
+    <div class="flow"><div class="tag">Riflessiva</div><div class="arrow" aria-hidden="true">↓</div><div class="box">l’azione <b>si riflette</b> sul soggetto; soggetto e oggetto coincidono</div><div class="arrow" aria-hidden="true">↓</div><div class="box ex">Camilla <b class="v">si pettina</b>.</div></div>
+  </div>
+
+  <div class="block">
+    <h3>Confronta le tre forme</h3>
+    <p>Scegli una forma e guarda come cambiano i ruoli nella frase.</p>
+    <div class="legend"><span class="r sog">soggetto</span><span class="r ver">verbo</span><span class="r ogg">complemento oggetto</span><span class="r ind">complemento d’agente</span></div>
+    <div id="d6"></div>
+  </div>
+
+  <div class="block">
+    <h3>Attiva e passiva</h3>
+    <div class="dl">
+      <div class="it"><span class="nm">Attiva</span><span class="tx">Il soggetto compie l’azione o si trova nello stato indicato dal verbo. È possibile con <b>tutti i verbi</b>, transitivi e intransitivi.<i>Il Tirreno <span class="v">bagna</span> Napoli.</i></span></div>
+      <div class="it"><span class="nm">Passiva</span><span class="tx">Il soggetto subisce l’azione. È possibile <b>soltanto con i verbi transitivi</b>. Chi compie l’azione è il <b>complemento d’agente</b> (<span class="k">da chi?</span>).<i>Napoli <span class="v">è bagnata</span> dal Tirreno.</i></span></div>
+      <div class="it"><span class="nm">Riflessiva</span><span class="tx">Soggetto e oggetto coincidono.<i>Il gatto <span class="v">si lava</span>. (= il gatto lava sé stesso)</i></span></div>
+    </div>
+  </div>
+  <div class="quiz" data-quiz="q6"></div>
+</section>
+
+<!-- RIEPILOGO -->
+<section class="view" id="v-ep" hidden>
+  <div class="sechead"><div><h2>Riepilogo</h2><p class="lead">Sei criteri per descrivere un verbo, in una tabella.</p></div></div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Criterio</th><th>Categorie</th><th>Come riconoscerle</th><th>Esempio</th></tr></thead>
+      <tbody>
+        <tr><td>1 Significato nella frase</td><td>azione compiuta, azione subita, esistenza o stato, ciò che accade</td><td>Che cosa dice il verbo del soggetto?</td><td class="e">Lo scienziato ha ricevuto molti riconoscimenti.</td></tr>
+        <tr><td>2 Complemento oggetto</td><td>transitivi, intransitivi</td><td>Prova la domanda “che cosa?”</td><td class="e">Clara mangia un biscotto. Clara passeggia.</td></tr>
+        <tr><td>3 Soggetto</td><td>personali, impersonali</td><td>Cerca il soggetto, anche sottinteso. Gli impersonali stanno solo alla 3ª persona singolare.</td><td class="e">(Noi) andiamo al mare. Piove.</td></tr>
+        <tr><td>4 Senso del verbo</td><td>predicativi, copulativi</td><td>Ha senso proprio o collega il soggetto a una parte nominale?</td><td class="e">Chiara stima Gianluca. Chiara è una ragazza studiosa.</td></tr>
+        <tr><td>5 Struttura</td><td>radice + desinenza: persona, modo, tempo</td><td>Separa la radice invariabile dalla desinenza.</td><td class="e">parl-avamo</td></tr>
+        <tr><td>6 Forma</td><td>attiva, passiva, riflessiva</td><td>Chi compie l’azione? Il soggetto, un complemento d’agente o il soggetto su sé stesso?</td><td class="e">Camilla pettina la sorella. La sorella è pettinata da Camilla. Camilla si pettina.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="block">
+    <h3>Analizza un verbo</h3>
+    <p>Scegli una frase e leggi la classificazione del verbo secondo tutti i criteri.</p>
+    <div class="seg" id="anseg"></div>
+    <dl class="an" id="anout" aria-live="polite"></dl>
+  </div>
+</section>
+
+<p class="foot">Fonte: pagine di grammatica sul verbo (paragrafi 1-6), riorganizzate in forma di mappa.</p>
+</main>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+
+  /* ---------- navigazione ---------- */
+  var VIEWS=[["map","Mappa"],["s1","1 Il verbo"],["s2","2 Transitivi"],["s3","3 Personali"],["s4","4 Predicativi"],["s5","5 Persona, modo, tempo"],["s6","6 Forma"],["ep","Riepilogo"]];
+  var tabs=$("#tabs");
+  VIEWS.forEach(function(v){
+    var b=document.createElement("button");
+    b.className="tab";b.setAttribute("role","tab");b.dataset.v=v[0];b.textContent=v[1];
+    b.addEventListener("click",function(){show(v[0])});
+    tabs.appendChild(b);
+  });
+  function show(id,noscroll){
+    var idx=-1;
+    VIEWS.forEach(function(v,i){
+      var on=v[0]===id; if(on) idx=i;
+      $("#v-"+v[0]).hidden=!on;
+    });
+    if(idx<0){show("map");return}
+    $$(".tab").forEach(function(t){
+      var on=t.dataset.v===id;
+      t.setAttribute("aria-selected",on?"true":"false");
+      if(on&&t.scrollIntoView){try{t.scrollIntoView({block:"nearest",inline:"center"})}catch(e){}}
+    });
+    try{history.replaceState(null,"","#"+id)}catch(e){}
+    if(!noscroll) window.scrollTo(0,0);
+  }
+  $$("[data-go]").forEach(function(el){el.addEventListener("click",function(){show(el.dataset.go)})});
+
+  /* pulsanti precedente/successiva */
+  VIEWS.forEach(function(v,i){
+    var sec=$("#v-"+v[0]);
+    var p=document.createElement("div");p.className="pager";
+    var a=document.createElement("button");a.className="btn";
+    var n=document.createElement("button");n.className="btn";
+    if(i>0){a.textContent="← "+VIEWS[i-1][1];a.addEventListener("click",function(){show(VIEWS[i-1][0])})}else{a.hidden=true}
+    if(i<VIEWS.length-1){n.textContent=VIEWS[i+1][1]+" →";n.addEventListener("click",function(){show(VIEWS[i+1][0])})}else{n.hidden=true}
+    p.appendChild(a);p.appendChild(n);sec.appendChild(p);
+  });
+
+  /* testo grande */
+  var sizeBtn=$("#size");
+  sizeBtn.addEventListener("click",function(){
+    var on=sizeBtn.getAttribute("aria-pressed")!=="true";
+    sizeBtn.setAttribute("aria-pressed",on?"true":"false");
+    if(on){document.documentElement.dataset.size="l"}else{delete document.documentElement.dataset.size}
+  });
+
+  /* ---------- analisi a colonne ---------- */
+  function parseHTML(items){
+    return '<div class="parse">'+items.map(function(it){
+      var w=it[0],r=it[1],l=it[2];
+      return '<div class="pc '+(r||"")+'"><span class="w'+(r?' r '+r:'')+'">'+w+'</span><span class="lab">'+l+'</span></div>';
+    }).join("")+'</div>';
+  }
+  $$("[data-p]").forEach(function(el){
+    try{el.outerHTML=parseHTML(JSON.parse(el.dataset.p))}catch(e){}
+  });
+
+  /* ---------- riquadri a scomparsa ---------- */
+  $$("[data-reveal]").forEach(function(b){
+    b.addEventListener("click",function(){
+      var t=document.getElementById(b.dataset.reveal);
+      var open=t.hidden;
+      t.hidden=!open;
+      b.setAttribute("aria-expanded",open?"true":"false");
+    });
+  });
+
+  /* ---------- demo a passi ---------- */
+  function mountDemo(id,steps){
+    var root=document.getElementById(id);
+    var seg=document.createElement("div");seg.className="seg";
+    var out=document.createElement("div");out.setAttribute("aria-live","polite");
+    root.appendChild(seg);root.appendChild(out);
+    var btns=steps.map(function(s,i){
+      var b=document.createElement("button");b.className="btn";b.textContent=s.l;b.setAttribute("aria-pressed","false");
+      b.addEventListener("click",function(){pick(i)});
+      seg.appendChild(b);return b;
+    });
+    function pick(i){
+      btns.forEach(function(b,j){b.setAttribute("aria-pressed",j===i?"true":"false")});
+      out.innerHTML=parseHTML(steps[i].p)+'<p>'+steps[i].t+'</p>';
+    }
+    pick(0);
+  }
+  mountDemo("d1",[
+    {l:"1 Il verbo da solo",p:[["Nadia","sog","soggetto"],["dorme","ver","verbo"]],t:"L’azione compiuta dal soggetto si conclude con il verbo."},
+    {l:"2 Con il complemento oggetto",p:[["Nadia","sog","soggetto"],["ha comprato","ver","verbo"],["un libro","ogg","complemento oggetto"]],t:"Più spesso l’azione richiede un complemento diretto o complemento oggetto."},
+    {l:"3 Con i complementi indiretti",p:[["Nadia","sog","soggetto"],["ha comprato","ver","verbo"],["un libro","ogg","complemento oggetto"],["di fantascienza nella libreria sotto i portici","ind","complementi indiretti"]],t:"L’azione può essere ampliata da complementi indiretti."}
+  ]);
+  mountDemo("d6",[
+    {l:"Attiva",p:[["I ragazzi","sog","soggetto"],["mangiarono","ver","verbo di forma attiva"],["le mele","ogg","complemento oggetto (che cosa?)"]],t:"Il soggetto compie l’azione."},
+    {l:"Passiva",p:[["Le mele","sog","soggetto"],["furono mangiate","ver","verbo di forma passiva"],["dai ragazzi","ind","complemento d’agente (da chi?)"]],t:"Il soggetto subisce l’azione. Chi la compie diventa complemento d’agente."},
+    {l:"Riflessiva",p:[["Camilla","sog","soggetto"],["si pettina","ver","verbo di forma riflessiva"]],t:"Soggetto e oggetto coincidono: Camilla pettina sé stessa."}
+  ]);
+
+  /* ---------- sezione 5: riquadri e persona ---------- */
+  $$("#seg5 .btn").forEach(function(b){
+    b.addEventListener("click",function(){
+      $$("#seg5 .btn").forEach(function(x){
+        var on=x===b;x.setAttribute("aria-pressed",on?"true":"false");
+        document.getElementById(x.dataset.pane).hidden=!on;
+      });
+    });
+  });
+  var PERS=[["io","1ª persona singolare","o"],["tu","2ª persona singolare","i"],["lui, lei","3ª persona singolare","a"],["noi","1ª persona plurale","iamo"],["voi","2ª persona plurale","ate"],["loro","3ª persona plurale","ano"]];
+  var who=$("#who");
+  function pickPers(i){
+    $$("button",who).forEach(function(b,j){b.setAttribute("aria-pressed",j===i?"true":"false")});
+    $("#wordout").innerHTML=PERS[i][0]+' salt-<span class="d">'+PERS[i][2]+'</span>';
+    $("#wordlab").textContent=PERS[i][1]+": radice salt- (invariabile), desinenza -"+PERS[i][2]+" (variabile).";
+  }
+  PERS.forEach(function(p,i){
+    var b=document.createElement("button");b.className="btn";b.textContent=p[0];b.setAttribute("aria-pressed","false");
+    b.addEventListener("click",function(){pickPers(i)});who.appendChild(b);
+  });
+  pickPers(0);
+
+  /* ---------- verifiche ---------- */
+  var Q={
+    q1:{p:"Che cosa indica il verbo in evidenza?",o:["Azione compiuta","Azione subita","Esistenza o stato","Qualcosa che accade"],i:[
+      ["Lo scienziato <b>ha scoperto</b> l’origine della malattia.",0,"Il soggetto compie un’azione."],
+      ["La malattia <b>è causata</b> da un virus.",1,"Il soggetto subisce l’azione."],
+      ["Lo scienziato <b>è</b> un noto studioso.",2,"Il verbo indica lo stato del soggetto."],
+      ["Lo scienziato <b>ha ricevuto</b> molti riconoscimenti.",3,"Il verbo indica qualcosa che accade al soggetto."]]},
+    q2:{p:"Il verbo è transitivo o intransitivo?",o:["Transitivo","Intransitivo"],i:[
+      ["Clara <b>mangia</b> un biscotto.",0,"Mangia che cosa? Un biscotto: c’è il complemento oggetto."],
+      ["Clara <b>passeggia</b>.",1,"La domanda “che cosa?” non ha risposta."],
+      ["Nadia <b>ha comprato</b> un libro.",0,"Ha comprato che cosa? Un libro."],
+      ["Nadia <b>dorme</b>.",1,"L’azione si conclude con il verbo."],
+      ["Lo scienziato <b>ha scoperto</b> l’origine della malattia.",0,"Ha scoperto che cosa? L’origine della malattia."],
+      ["Marco <b>nuota</b>.",1,"Non c’è complemento oggetto."]]},
+    q3:{p:"Il verbo è personale o impersonale?",o:["Personale","Impersonale"],i:[
+      ["<b>Piove</b>.",1,"Verbo atmosferico: nessun soggetto, 3ª persona singolare."],
+      ["Marco <b>nuota</b>.",0,"Il soggetto è Marco."],
+      ["(Noi) <b>andiamo</b> al mare.",0,"Il soggetto è sottinteso, ma esiste."],
+      ["<b>Conviene</b> partire ora.",1,"Indica una condizione non attribuita a un soggetto determinato, alla 3ª singolare."],
+      ["<b>Grandina</b>.",1,"Verbo atmosferico."],
+      ["Loro <b>mangiavano</b>.",0,"Il soggetto è loro."],
+      ["<b>Dormo</b>.",0,"Soggetto sottinteso: io."]]},
+    q4:{p:"Il verbo è predicativo o copulativo?",o:["Predicativo","Copulativo"],i:[
+      ["Chiara <b>stima</b> Gianluca.",0,"Ha senso proprio e compiuto: predicato verbale."],
+      ["Chiara <b>è</b> una ragazza studiosa.",1,"Collega il soggetto a una parte nominale."],
+      ["Il mio frigorifero <b>è</b> vecchio.",1,"Copula + parte nominale (vecchio): predicato nominale."],
+      ["Lo scienziato <b>ha ricevuto</b> molti riconoscimenti.",0,"Ha senso proprio."],
+      ["Il cielo <b>sembra</b> sereno.",1,"Sembrare è un verbo copulativo; sereno è la parte nominale."],
+      ["Il sole <b>splende</b>.",0,"Splendere indica una condizione e ha senso proprio."]]},
+    q5a:{p:"Di che modo è il verbo in evidenza?",o:["Indicativo","Congiuntivo","Condizionale","Imperativo","Modo indefinito"],i:[
+      ["<b>Abito</b> in una cascina in campagna.",0,"Presenta un fatto reale e certo."],
+      ["Spero che <b>abbiate</b> ragione.",1,"Fatto presentato come augurabile, in una frase dipendente."],
+      ["Se il treno fosse in ritardo, <b>farei</b> ancora in tempo.",2,"Possibilità che si realizza a una condizione."],
+      ["<b>Spostatevi</b> di lì!",3,"Esprime un ordine."],
+      ["<b>Studiare</b> costa fatica.",4,"Infinito: modo indefinito, senza desinenze personali."]]},
+    q5b:{p:"Il tempo del verbo in evidenza è semplice o composto?",o:["Semplice","Composto"],i:[
+      ["<b>vedo</b>",0,"Una sola parola."],
+      ["<b>ha visto</b>",1,"Ausiliare avere + participio passato."],
+      ["<b>faremo</b>",0,"Una sola parola."],
+      ["<b>avremo fatto</b>",1,"Ausiliare avere + participio passato."],
+      ["<b>venendo</b>",0,"Una sola parola."],
+      ["<b>avessero sentito</b>",1,"Ausiliare avere + participio passato."]]},
+    q6:{p:"Di che forma è il verbo in evidenza?",o:["Attiva","Passiva","Riflessiva"],i:[
+      ["Camilla <b>pettina</b> la sorella.",0,"Il soggetto compie l’azione."],
+      ["La sorella <b>è pettinata</b> da Camilla.",1,"Il soggetto subisce l’azione, c’è il complemento d’agente."],
+      ["Camilla <b>si pettina</b>.",2,"Soggetto e oggetto coincidono."],
+      ["Il Tirreno <b>bagna</b> Napoli.",0,"Il soggetto compie l’azione."],
+      ["Napoli <b>è bagnata</b> dal Tirreno.",1,"Il soggetto subisce l’azione."],
+      ["Il gatto <b>si lava</b>.",2,"Il gatto lava sé stesso."]]}
+  };
+  function mountQuiz(root,cfg){
+    var i=0,score=0;
+    function render(){
+      if(i>=cfg.i.length){
+        root.innerHTML='<div class="qh"><span>Verifica</span><span>Completata</span></div><p class="score">'+score+' su '+cfg.i.length+'</p><p>'+(score===cfg.i.length?"Tutte le risposte sono corrette.":"Rileggi lo schema e riprova.")+'</p><button class="btn" id="re">Ricomincia</button>';
+        $("#re",root).addEventListener("click",function(){i=0;score=0;render()});
+        return;
+      }
+      var q=cfg.i[i];
+      root.innerHTML='<div class="qh"><span>Verifica</span><span>'+(i+1)+' di '+cfg.i.length+'</span></div>'+
+        '<p class="qp">'+cfg.p+'</p><p class="qs">'+q[0]+'</p><div class="opts"></div><div class="fb" aria-live="polite"></div><div class="nx"></div>';
+      var opts=$(".opts",root),fb=$(".fb",root),nx=$(".nx",root);
+      cfg.o.forEach(function(label,k){
+        var b=document.createElement("button");b.className="opt";b.textContent=label;
+        b.addEventListener("click",function(){
+          $$(".opt",root).forEach(function(x){x.disabled=true});
+          var okk=k===q[1];
+          if(okk){score++;b.classList.add("ok");fb.innerHTML='<b class="ok">Corretto.</b> '+q[2]}
+          else{b.classList.add("bad");$$(".opt",root)[q[1]].classList.add("ok");fb.innerHTML='<b class="bad">Risposta sbagliata.</b> La risposta giusta è “'+cfg.o[q[1]].toLowerCase()+'”. '+q[2]}
+          var nb=document.createElement("button");nb.className="btn";nb.style.marginTop=".6em";
+          nb.textContent=(i===cfg.i.length-1)?"Vedi il risultato":"Avanti";
+          nb.addEventListener("click",function(){i++;render()});
+          nx.appendChild(nb);nb.focus();
+        });
+        opts.appendChild(b);
+      });
+    }
+    render();
+  }
+  $$("[data-quiz]").forEach(function(el){mountQuiz(el,Q[el.dataset.quiz])});
+
+  /* ---------- analizzatore ---------- */
+  var AN=[
+    {s:"Nadia ha comprato un libro.",v:"ha comprato",r:[["Complemento oggetto","presente: un libro (transitivo)"],["Soggetto","Nadia (personale)"],["Senso del verbo","predicativo"],["Forma","attiva"],["Persona","3ª singolare"],["Modo","indicativo"],["Tempo","passato, composto (ha + comprato)"]]},
+    {s:"Clara passeggia.",v:"passeggia",r:[["Complemento oggetto","assente (intransitivo)"],["Soggetto","Clara (personale)"],["Senso del verbo","predicativo"],["Forma","attiva"],["Persona","3ª singolare"],["Modo","indicativo"],["Tempo","presente, semplice"]]},
+    {s:"Dormo.",v:"dormo",r:[["Complemento oggetto","assente (intransitivo)"],["Soggetto","io, sottinteso (personale)"],["Senso del verbo","predicativo"],["Forma","attiva"],["Persona","1ª singolare"],["Modo","indicativo"],["Tempo","presente, semplice"]]},
+    {s:"Piove.",v:"piove",r:[["Complemento oggetto","assente (intransitivo)"],["Soggetto","nessun soggetto (impersonale)"],["Senso del verbo","predicativo"],["Forma","attiva"],["Persona","3ª singolare, sempre"],["Modo","indicativo"],["Tempo","presente, semplice"]]},
+    {s:"Il mio frigorifero è vecchio.",v:"è",r:[["Complemento oggetto","assente (intransitivo)"],["Soggetto","il mio frigorifero (personale)"],["Senso del verbo","copulativo: con “vecchio” forma il predicato nominale"],["Forma","attiva"],["Persona","3ª singolare"],["Modo","indicativo"],["Tempo","presente, semplice"]]},
+    {s:"Camilla si pettina.",v:"si pettina",r:[["Complemento oggetto","coincide con il soggetto (transitivo)"],["Soggetto","Camilla (personale)"],["Senso del verbo","predicativo"],["Forma","riflessiva"],["Persona","3ª singolare"],["Modo","indicativo"],["Tempo","presente, semplice"]]}
+  ];
+  var anseg=$("#anseg"),anout=$("#anout");
+  function pickAn(i){
+    $$("button",anseg).forEach(function(b,j){b.setAttribute("aria-pressed",j===i?"true":"false")});
+    var a=AN[i];
+    anout.innerHTML='<dt>Verbo</dt><dd><span class="r ver">'+a.v+'</span></dd>'+a.r.map(function(x){return '<dt>'+x[0]+'</dt><dd>'+x[1]+'</dd>'}).join("");
+  }
+  AN.forEach(function(a,i){
+    var b=document.createElement("button");b.className="btn";b.textContent=a.s;b.setAttribute("aria-pressed","false");
+    b.addEventListener("click",function(){pickAn(i)});anseg.appendChild(b);
+  });
+  pickAn(0);
+
+  /* ---------- avvio ---------- */
+  var start=(location.hash||"").replace("#","");
+  show(start||"map",true);
+})();
+</script>
+
+</body></html>
